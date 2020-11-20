@@ -7,7 +7,7 @@ public class CurrencyConversion {
         System.out.println("PLz enter a VND money");
         Scanner sc = new Scanner(System.in);
         vnd = sc.nextInt();
-        System.out.println("USD" + vnd*usd);
+        System.out.println("USD: " + vnd*usd);
     }
 
 
