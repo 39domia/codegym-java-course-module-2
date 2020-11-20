@@ -13,7 +13,11 @@ public class NumberText {
                     case 3 -> System.out.println("three");
                     case 4 -> System.out.println("four");
                     case 5 -> System.out.println("five");
-                    case 6 -> System.out.println("six");
+                    case 6 -> {
+                        System.out.println("six");
+                        System.out.println("six");
+
+                    }
                     case 7 -> System.out.println("seven");
                     case 8 -> System.out.println("eight");
                     case 9 -> System.out.println("night");
