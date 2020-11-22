@@ -1,4 +1,5 @@
-public class Display20Prime {
+
+public class Display100Prime {
     static boolean CheckPrime(int num) {
         if (num == 2) {
             return true;
@@ -15,19 +16,10 @@ public class Display20Prime {
     }
 
     public static void main(String[] args) {
-        int count = 1;
-        int i = 1;
-        while (count <= 20) {
+        for (int i = 1; i < 100; i++) {
             if (CheckPrime(i)) {
-                System.out.println(count + " " + i);
-                count++;
+                System.out.println(i);
             }
-            i++;
         }
     }
 }
-
-
-
-
-
