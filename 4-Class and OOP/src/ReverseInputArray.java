@@ -1,7 +1,7 @@
 
 import java.util.Scanner;
 
-public class Laptop {
+public class ReverseInputArray {
 
     public static void main(String[] args) {
         int size;
