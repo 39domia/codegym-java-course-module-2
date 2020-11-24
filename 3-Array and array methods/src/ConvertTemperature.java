@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class ComvertTemperature {
+public class ConvertTemperature {
     public static double celsiusToFahrenheit(double celsius) {
         return (9.0 / 5) * celsius + 32;
     }
@@ -33,6 +33,7 @@ public class ComvertTemperature {
                     System.out.println("Celsius to Fahrenheit: " + celsiusToFahrenheit(celsius));
                 }
                 case 0 -> System.exit(0);
+                default -> System.out.println("Wrong choice");
             }
         } while (choice != 0);
 
