@@ -1,4 +1,17 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
 public class FindMinArray {
+    static int[] createArray(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter size of array: ");
+        int size = sc.nextInt();
+        int[] arr = new int[size];
+        for (int i =0; i< arr.length;i++){
+            arr[i] = sc.nextInt();
+        }
+        return arr;
+    }
     public static int minValue(int[] arr) {
         int min =arr[0];
         for (int j : arr) {
@@ -10,8 +23,9 @@ public class FindMinArray {
     }
 
     public static void main(String[] args) {
-        int[] arr = {4, 12, 7, 8, 1, 6, 9};
-        int index = minValue(arr);
-        System.out.println("The smallest element in the array is: " + index);
+        int[] arr = createArray();
+        System.out.println(Arrays.toString(arr));
+        int min = minValue(arr);
+        System.out.println("The smallest element in the array is: " + min);
     }
 }
