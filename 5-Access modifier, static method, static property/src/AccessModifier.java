@@ -1,4 +1,4 @@
-public class A {
+public class AccessModifier {
     private int data = 40;
 
     private void msg() {
@@ -11,7 +11,7 @@ public class A {
 class B {
     public static void main(String[] args) {
 
-        A obj = new A();
+        AccessModifier obj = new AccessModifier();
 
         System.out.println(obj.data);//Compile Time Error
 
