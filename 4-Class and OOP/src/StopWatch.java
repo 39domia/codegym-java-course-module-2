@@ -46,6 +46,4 @@ public class StopWatch {
         sw.stop();
         System.out.println("Distance time in milli second: " + sw.getElapsedTime());
     }
-
-
 }

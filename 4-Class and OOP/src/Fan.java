@@ -1,0 +1,84 @@
+public class Fan {
+    private final int SLOW = 1;
+    private final int MEDIUM = 2;
+    private final int FAST = 3;
+    private int speed = SLOW;
+    private boolean status;
+    private double radius = 5;
+    private String color = "blue";
+
+    public Fan() {
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public int getSLOW() {
+        return SLOW;
+    }
+
+    public int getMEDIUM() {
+        return MEDIUM;
+    }
+
+    public int getFAST() {
+        return FAST;
+    }
+
+
+    public String toString() {
+        return "Fan{" +
+                "speed=" + this.speed +
+                ", status=" + this.status +
+                ", radius=" + this.radius +
+                ", color='" + this.color + '\'' +
+                '}';
+    }
+
+    public static void main(String[] args) {
+        Fan f1 = new Fan();
+        f1.setSpeed(f1.getFAST());
+        f1.setRadius(10);
+        f1.setColor("yellow");
+        f1.setStatus(true);
+
+        Fan f2 = new Fan();
+        f2.setSpeed(f2.getMEDIUM());
+        f2.setRadius(5);
+        f2.setColor("blue");
+        f2.setStatus(false);
+
+        System.out.println(f1.toString());
+        System.out.println(f2.toString());
+
+    }
+}
