@@ -79,6 +79,5 @@ public class Fan {
 
         System.out.println(f1.toString());
         System.out.println(f2.toString());
-
     }
 }
