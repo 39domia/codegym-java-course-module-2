@@ -1,7 +1,7 @@
 public class AccessModifier {
-    private int data = 40;
+     int data = 40;
 
-    private void msg() {
+     void msg() {
         System.out.println("Hello java");
     }
 
