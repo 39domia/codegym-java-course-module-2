@@ -49,8 +49,8 @@ public class Drinks {
             choose = sc.nextInt();
             switch (choose) {
                 case 1:
-                    for(int i = 0; i< setDrinks().length;i++){
-                            System.out.println(setDrinks()[i]);
+                    for (int i = 0; i < setDrinks().length; i++) {
+                        System.out.println(setDrinks()[i]);
                     }
                     break;
                 case 2:
@@ -64,12 +64,12 @@ public class Drinks {
     }
 
     public Drinks[] setDrinks() {
-         return new Drinks[]{
-                 new Drinks("Trà sữa trân châu", "Trà sữa"),
-                 new Drinks("Trà sữa chocolate", "Trà sữa"),
-                 new Drinks("Cà phê sữa", "Cà phê"),
-                 new Drinks("Cà phê đen", "Cà phê"),
-         };
+        return new Drinks[]{
+                new Drinks("Trà sữa trân châu", "Trà sữa"),
+                new Drinks("Trà sữa chocolate", "Trà sữa"),
+                new Drinks("Cà phê sữa", "Cà phê"),
+                new Drinks("Cà phê đen", "Cà phê"),
+        };
 
 //        Drinks traSua1 = new Drinks("Trà sữa trân châu", "Trà sữa");
 //        Drinks traSua2 = new Drinks("Trà sữa chocolate", "Trà sữa");
