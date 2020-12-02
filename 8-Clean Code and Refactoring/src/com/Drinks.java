@@ -73,6 +73,7 @@ public class Drinks {
 
 //        Drinks traSua1 = new Drinks("Trà sữa trân châu", "Trà sữa");
 //        Drinks traSua2 = new Drinks("Trà sữa chocolate", "Trà sữa");
+//        Drinks traSua2 = new Drinks("Trà sữa chocolate", "Trà sữa");
     }
 
     public static void main(String[] args) {
