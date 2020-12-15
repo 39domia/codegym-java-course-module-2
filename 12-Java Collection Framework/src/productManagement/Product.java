@@ -2,8 +2,8 @@ package productManagement;
 
 import java.util.Comparator;
 
-public class Product implements Comparable<Product> {
-    private int id;
+public class Product {
+    private final int id;
     private static int autoID = 0;
     private String name;
     private int price;
@@ -12,6 +12,10 @@ public class Product implements Comparable<Product> {
         this.id = ++autoID;
         this.name = name;
         this.price = price;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -38,22 +42,17 @@ public class Product implements Comparable<Product> {
                 ", price=" + price +
                 ']';
     }
-
-    @Override
-    public int compareTo(Product o) {
-        return price - o.getPrice();
-    }
 }
 
-class PriceComparator implements Comparator<Product> {
+class PriceAscendingSort implements Comparator<Product> {
     @Override
     public int compare(Product o1, Product o2) {
-        if (o1.getPrice() > o2.getPrice()) {
-            return -1;
-        } else if (o1.getPrice() == o2.getPrice()) {
-            return 0;
-        } else {
-            return 1;
-        }
+        return Integer.compare(o1.getPrice(), o2.getPrice());
+    }
+}
+class PriceDescendingSort implements Comparator<Product> {
+    @Override
+    public int compare(Product o1, Product o2) {
+        return Integer.compare(o2.getPrice(), o1.getPrice());
     }
 }

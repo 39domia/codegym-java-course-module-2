@@ -1,7 +1,6 @@
 package productManagement;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 
 public class ProductManager {
@@ -11,7 +10,6 @@ public class ProductManager {
     public String getString() {
         return sc.nextLine();
     }
-
 
     public int getInteger() {
         return Integer.parseInt(sc.nextLine());
@@ -34,32 +32,34 @@ public class ProductManager {
             System.out.println("E(x)it");
             choise = getChar();
             switch (choise) {
-                case 'a':
-                    addProduct();
-                    break;
-                case 'e':
-                    editProduct();
-                    break;
-                case 'd':
-                    deleteProduct();
-                    break;
-                case 'h':
-                    showAllProduct();
-                    break;
-                case 's':
-                    searchProducts();
-                    break;
-                case 'o':
-                    sortProduct();
-                    break;
-                case 'x':
-                    System.out.println("Exiting...");
-                    break;
-                default:
-                    System.out.println("Wrong select");
-                    break;
+                case 'a' -> addProduct();
+                case 'e' -> editProduct();
+                case 'd' -> deleteProduct();
+                case 'h' -> showAllProduct();
+                case 's' -> searchProducts();
+                case 'o' -> sortProduct();
+                case 'x' -> System.out.println("Exiting...");
+                default -> System.out.println("Wrong select");
             }
         }
+    }
+
+    public int indexOf(ArrayList<Product> list, int id) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId() == id) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int indexOf(ArrayList<Product> list, String name) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getName().equals(name)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
 
@@ -82,11 +82,10 @@ public class ProductManager {
             for (Product product : productList) {
                 System.out.println(product);
             }
-        } else{
+        } else {
             System.out.println("List product empty.");
             System.out.println("==============================");
         }
-
     }
 
     public void editProduct() {
@@ -94,25 +93,33 @@ public class ProductManager {
         System.out.println("Enter product ID:");
         int id = getInteger();
         System.out.println("Product selected:");
-        System.out.println(productList.get(id - 1));
-        System.out.println("Enter new name:");
-        String newName = getString();
-        System.out.println("Enter new price");
-        int newPrice = getInteger();
-        productList.get(id - 1).setName(newName);
-        productList.get(id - 1).setPrice(newPrice);
-        System.out.println("Edit done.");
+        int indexOf = indexOf(productList, id);
+        if (indexOf != -1) {
+            System.out.println(productList.get(indexOf));
+            System.out.println("Enter new name:");
+            String newName = getString();
+            System.out.println("Enter new price");
+            int newPrice = getInteger();
+            productList.get(indexOf).setName(newName);
+            productList.get(indexOf).setPrice(newPrice);
+            System.out.println("Edit done.");
+        } else System.out.println("Not found");
         System.out.println("==============================");
     }
+
 
     public void deleteProduct() {
         System.out.println("Delete product by ID");
         System.out.println("Enter product ID:");
         int id = getInteger();
         System.out.println("Product selected:");
-        System.out.println(productList.get(id - 1));
-        productList.remove(id - 1);
-        System.out.println("Delete done.");
+        int indexOf = indexOf(productList, id);
+        if (indexOf != -1) {
+            System.out.println(productList.get(indexOf));
+            productList.remove(indexOf);
+            System.out.println("Delete done.");
+
+        } else System.out.println("Not found");
         System.out.println("==============================");
     }
 
@@ -120,26 +127,29 @@ public class ProductManager {
         System.out.println("Enter name product:");
         String nameSearch = getString();
         System.out.println("Search result:");
-        for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getName().equals(nameSearch)) {
-                System.out.println(productList.get(i));
-            }
-        }
-        System.out.println("Search done.");
+        int indexOf = indexOf(productList, nameSearch);
+        if (indexOf != -1) {
+            System.out.println(productList.get(indexOf));
+            System.out.println("Search done.");
+        } else System.out.println("Not found");
         System.out.println("==============================");
     }
 
-    public void sortProduct(){
+    public void sortProduct() {
         System.out.println("Sorted Ascending");
-        Collections.sort(productList);
-        showAllProduct();
+        PriceAscendingSort ascendingSort = new PriceAscendingSort();
+        productList.sort(ascendingSort);
+        for (Product st : productList) {
+            System.out.println(st.toString());
+        }
         System.out.println("Sort done.");
         System.out.println("==============================");
 
         System.out.println("Sorted Descending ");
-        PriceComparator priceComparator = new PriceComparator();
-        Collections.sort(productList,priceComparator);
-        for(Product st : productList){
+        PriceDescendingSort descendingSort = new PriceDescendingSort();
+        productList.sort(descendingSort);
+        for (Product st :
+                productList) {
             System.out.println(st.toString());
         }
         System.out.println("Sort done.");
