@@ -42,10 +42,29 @@ public class Sort {
         return arr;
     }
 
+    public static int[] selectionSort(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            int min = arr[i];
+            int index = 0;
+            for (int j = i; j < arr.length; j++) {
+                if (arr[j] <= min) {
+                    min = arr[j];
+                    index = j;
+                }
+            }
+            int temp = arr[i];
+            arr[i] = arr[index];
+            arr[index] = temp;
+        }
+        return arr;
+    }
+
 
     public static void main(String[] args) {
-        int[] arr = initArr(10);
-        System.out.println(Arrays.toString(bubbleSort2(arr)));
+        int[] arr = initArr(20);
+//        int[] arr2 = {1, 1, 2, 3, 7, 5, 4, 8, 9};
+        System.out.println(Arrays.toString(arr));
+        System.out.println(Arrays.toString(selectionSort(arr)));
 
     }
 }
