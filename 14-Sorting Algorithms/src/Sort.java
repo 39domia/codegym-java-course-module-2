@@ -59,12 +59,25 @@ public class Sort {
         return arr;
     }
 
+    public static int[] insertionSort(int[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            int currentElement = arr[i];
+            int k;
+            for (k = i - 1; k >= 0 && arr[k] > currentElement; k--) {
+                arr[k + 1] = arr[k];
+            }
+            arr[k + 1] = currentElement;
+        }
+        return arr;
+    }
+
 
     public static void main(String[] args) {
-        int[] arr = initArr(20);
-//        int[] arr2 = {1, 1, 2, 3, 7, 5, 4, 8, 9};
+//        int[] arr = initArr(20);
+        int[] arr = {6, 1, 2, 3, 7, 5, 4, 8, 9};
         System.out.println(Arrays.toString(arr));
-        System.out.println(Arrays.toString(selectionSort(arr)));
+//        System.out.println(Arrays.toString(selectionSort(arr)));
+        System.out.println(Arrays.toString(insertionSort(arr)));
 
     }
 }
