@@ -17,17 +17,17 @@ public class Read {
 //        bufferedReader.close();
 //        bufferedWriter.close();
 
-        File fileIn = new File("img1.png");
-        File fileOut = new File("img2.png");
-        FileOutputStream fileOutputStream = new FileOutputStream(fileOut);
-        FileInputStream fileInputStream = new FileInputStream(fileIn);
-
-        byte[] b = new byte[1];
-        while ((fileInputStream.read(b)) > 0 ){
-            fileOutputStream.write(b);
-        }
-        fileInputStream.close();
-        fileOutputStream.close();
+//        File fileIn = new File("img1.png");
+//        File fileOut = new File("img2.png");
+//        FileOutputStream fileOutputStream = new FileOutputStream(fileOut);
+//        FileInputStream fileInputStream = new FileInputStream(fileIn);
+//
+//        byte[] b = new byte[1];
+//        while ((fileInputStream.read(b)) > 0 ){
+//            fileOutputStream.write(b);
+//        }
+//        fileInputStream.close();
+//        fileOutputStream.close();
 
     }
 }
