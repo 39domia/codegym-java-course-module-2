@@ -4,7 +4,6 @@ import java.util.*;
 public class ManagementApp {
     Scanner sc = new Scanner(System.in);
     static HashMap<Integer, Student> map = new HashMap<>();
-
     static {
         try {
             FileInputStream fileIn = new FileInputStream("data.txt");
@@ -12,7 +11,6 @@ public class ManagementApp {
             map = (HashMap<Integer, Student>) in.readObject();
             Student.setAutoId(map.get(map.size()).getId());
         } catch (Exception e) {
-//            System.err.println("Có vấn đề đọc file");
             System.out.print("");
         }
     }
@@ -67,9 +65,9 @@ public class ManagementApp {
         int id = validateID("Nhập ID học viên để nhập điểm, nhập 0 để trở về menu");
         if (id == 0) return;
         double point1 = validatePoints("Nhập điểm học viên lần thứ 1 (hệ số 1)");
-        double point2 = validatePoints("2. Nhập điểm học viên lần thứ 2 (hệ số 1)");
-        double point3 = validatePoints("3. Nhập điểm học viên lần thứ 3 (hệ số 2)");
-        double point4 = validatePoints("4. Nhập điểm học viên lần thứ 4 (hệ số 3)");
+        double point2 = validatePoints("Nhập điểm học viên lần thứ 2 (hệ số 1)");
+        double point3 = validatePoints("Nhập điểm học viên lần thứ 3 (hệ số 2)");
+        double point4 = validatePoints("Nhập điểm học viên lần thứ 4 (hệ số 3)");
         map.get(id).getPointFactor1().set(0, point1);
         map.get(id).getPointFactor1().set(1, point2);
         map.get(id).getPointFactor2().set(0, point3);
@@ -151,7 +149,6 @@ public class ManagementApp {
         return max;
     }
 
-
     private void addStudent() {
         int number = validateNumberGreaterThan0("Nhập số lượng học viên cần thêm: ");
         for (int i = 0; i < number; i++) {
@@ -176,38 +173,28 @@ public class ManagementApp {
         System.out.println(mess);
         try {
             String name = sc.nextLine();
+            if (name.length() > 25) throw new Exception();
+            for (int i = 0; i < name.length(); i++) {
+                String str = name.charAt(i) + "";
+                if (!str.matches("[a-zA-Z ]")) {
+                    throw new Exception();
+                }
+            }
             name = name.toLowerCase();
             name = name.trim();
-            ArrayList<String> arr = new ArrayList<>();
-            for (int i = 0; i < name.length(); i++) {
-                if (!name.split("")[i].matches("[a-zA-Z ]")) {
-                    throw new Exception();
-                } else {
-                    arr.add(name.split("")[i]);
-                }
+            while (name.contains("  ")) {
+                name = name.replace("  ", " ");
             }
-            // Del space
-            String str = arr.get(0).toUpperCase();
-            arr.remove(0);
-            arr.add(0, str);
-            for (int i = 0; i < arr.size() - 1; i++) {
-                if (arr.get(i).equals(" ") && arr.get(i + 1).equals(" ")) {
-                    arr.remove(i + 1);
-                    i--;
+            String[] str = name.split("");
+            str[0] = str[0].toUpperCase();
+            StringBuilder nameBuilder = new StringBuilder(str[0]);
+            for (int i = 1; i < str.length; i++) {
+                if(str[i].equals(" ")){
+                    str[i+1] = str[i+1].toUpperCase();
                 }
-                if (arr.get(i).equals(" ") && !arr.get(i + 1).equals(" ")) {
-                    String result = arr.get(i + 1).toUpperCase();
-                    arr.remove(i + 1);
-                    arr.add(i + 1, result);
-                }
+                nameBuilder.append(str[i]);
             }
-            StringBuilder listString = new StringBuilder();
-            for (String s : arr) {
-                listString.append(s);
-            }
-            if (listString.toString().length() > 25)
-                throw new Exception();
-            return listString.toString();
+            return nameBuilder.toString();
         } catch (Exception e) {
             System.err.println("Trong tên không được có số hoặc quá dài");
             return validateName(mess);
