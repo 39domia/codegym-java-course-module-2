@@ -13,6 +13,7 @@ public class ManagementApp {
             Student.setAutoId(map.get(map.size()).getId());
         } catch (Exception e) {
 //            System.err.println("Có vấn đề đọc file");
+            System.out.print("");
         }
     }
 
