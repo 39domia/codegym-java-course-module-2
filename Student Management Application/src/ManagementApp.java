@@ -155,7 +155,7 @@ public class ManagementApp {
     private void addStudent() {
         int number = validateNumberGreaterThan0("Nhập số lượng học viên cần thêm: ");
         for (int i = 0; i < number; i++) {
-            String name = validateName("Nhập tên");
+            String name = validateName("Nhập tên:");
             Student student = new Student(name);
             map.put(student.getId(), student);
         }
@@ -180,7 +180,7 @@ public class ManagementApp {
             name = name.trim();
             ArrayList<String> arr = new ArrayList<>();
             for (int i = 0; i < name.length(); i++) {
-                if (name.split("")[i].matches("[\\d]")) {
+                if (!name.split("")[i].matches("[a-zA-Z ]")) {
                     throw new Exception();
                 } else {
                     arr.add(name.split("")[i]);
