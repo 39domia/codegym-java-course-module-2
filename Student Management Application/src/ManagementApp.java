@@ -52,7 +52,7 @@ public class ManagementApp {
                     gradingStudents();
                     break;
                 case 0:
-                    System.out.println("Đang thoát...");
+                    System.out.println("Cảm ơn đã sử dụng, tạm biệt!");
                     break;
                 default:
                     System.err.println("Nhập sai, vui lòng nhập lại");
