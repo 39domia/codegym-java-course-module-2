@@ -3,13 +3,13 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class FileExplorer {
     Scanner sc = new Scanner(System.in);
     final String folderPath = "C:\\Baitap";
-    File folder = new File(folderPath);
+    final File folder = new File(folderPath);
+    final String fileExtension = ".txt";
 
     boolean alreadyExecuted = false;
 
@@ -109,27 +109,34 @@ public class FileExplorer {
 
     private void search() {
         String keyword = validateFileNameWithMessage("Enter file name to search:");
+        boolean checkFound = false;
         for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.getName().contains(keyword)){
+            if (fileEntry.getName().contains(keyword)) {
                 System.out.println(fileEntry.getName());
+                checkFound = true;
             }
         }
-        System.out.println("===========================================");
-        done();
+        if (!checkFound){
+            System.out.println("File not found!");
+        }
+        else {
+            System.out.println("===========================================");
+            done();
+        }
+
     }
 
     private void move() {
         String source = validateFileNameWithMessage("Enter file name to move:");
         if (checkExistFile(mapFileNameFull(source))) {
             String destination = validatePath("Enter the destination path to move the file:");
-            try{
-                if (!checkBackSlashChar(destination)){
+            try {
+                if (!checkBackSlashChar(destination)) {
                     destination = destination.concat("\\");
                 }
                 destination = destination.concat(mapFileNameExtension(source));
                 Files.copy(Paths.get(mapFileNameFull(source)), Paths.get(destination));
-            }
-            catch (IOException e){
+            } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
             File sourceFile = new File(mapFileNameFull(source));
@@ -141,10 +148,9 @@ public class FileExplorer {
     }
 
     private boolean checkBackSlashChar(String destination) {
-        if (destination.charAt(destination.length()-1)=='\\'){
+        if (destination.charAt(destination.length() - 1) == '\\') {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -194,7 +200,7 @@ public class FileExplorer {
     }
 
     private String copyExistFileName(String source) {
-        if (checkExistFile(mapFileNameNoExtension(source).concat(" - Copy.txt"))) {
+        if (checkExistFile(mapFileNameNoExtension(source).concat(" - Copy").concat(fileExtension))) {
             int max = 2;
             for (final File fileEntry : folder.listFiles()) {
                 if (fileEntry.getName().contains(validateFileName(source).concat(" - Copy("))) {
@@ -204,9 +210,9 @@ public class FileExplorer {
                     }
                 }
             }
-            return mapFileNameNoExtension(source).concat(" - Copy(" + (max + 1) + ").txt");
+            return mapFileNameNoExtension(source).concat(" - Copy(" + (max + 1) + ")").concat(fileExtension);
         } else {
-            return mapFileNameNoExtension(source).concat(" - Copy.txt");
+            return mapFileNameNoExtension(source).concat(" - Copy").concat(fileExtension);
         }
     }
 
@@ -223,13 +229,13 @@ public class FileExplorer {
 
     private String mapFileNameFull(String fileName) {
         fileName = validateFileName(fileName);
-        return folderPath.concat("\\").concat(fileName.concat(".txt"));
+        return folderPath.concat("\\").concat(fileName.concat(fileExtension));
 
     }
 
     private String mapFileNameFullMess(String mess) {
         String fileName = validateFileNameWithMessage(mess);
-        return folderPath.concat("\\").concat(fileName.concat(".txt"));
+        return folderPath.concat("\\").concat(fileName.concat(fileExtension));
 
     }
 
@@ -239,7 +245,7 @@ public class FileExplorer {
     }
 
     private String mapFileNameExtension(String fileName) {
-        return fileName.concat(".txt");
+        return fileName.concat(fileExtension);
 
     }
 
@@ -283,14 +289,19 @@ public class FileExplorer {
         String keyword = validateFileNameWithMessage("Enter file name to search:");
         File[] matchingFiles = folder.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
-                return name.startsWith(keyword) && name.endsWith(".txt");
+                return name.startsWith(keyword) && name.endsWith(fileExtension);
             }
         });
-        for (File file: matchingFiles) {
-            System.out.println(file.getName());
+        if (matchingFiles.length == 0){
+            System.out.println("File not found!");
         }
-        System.out.println("===========================================");
-        done();
+        else {
+            for (File file : matchingFiles) {
+                System.out.println(file.getName());
+            }
+            System.out.println("===========================================");
+            done();
+        }
     }
 
     private void dir() {
@@ -338,6 +349,6 @@ public class FileExplorer {
     public static void main(String[] args) {
         FileExplorer app = new FileExplorer();
         app.mainMenu();
-    }
 
+    }
 }
