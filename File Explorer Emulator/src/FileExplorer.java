@@ -108,9 +108,9 @@ public class FileExplorer {
     }
 
     private void search() {
-        String fileName = validateFileNameWithMessage("Enter file name to search:");
+        String keyword = validateFileNameWithMessage("Enter file name to search:");
         for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.getName().contains(fileName)){
+            if (fileEntry.getName().contains(keyword)){
                 System.out.println(fileEntry.getName());
             }
         }
@@ -280,13 +280,17 @@ public class FileExplorer {
     }
 
     private void search1() {
-        File f = new File(folderPath);
-        File[] matchingFiles = f.listFiles(new FilenameFilter() {
+        String keyword = validateFileNameWithMessage("Enter file name to search:");
+        File[] matchingFiles = folder.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
-                return name.startsWith("temp") && name.endsWith("txt");
+                return name.startsWith(keyword) && name.endsWith(".txt");
             }
         });
-        System.out.println(Arrays.toString(matchingFiles));
+        for (File file: matchingFiles) {
+            System.out.println(file.getName());
+        }
+        System.out.println("===========================================");
+        done();
     }
 
     private void dir() {
