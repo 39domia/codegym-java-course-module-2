@@ -3,14 +3,17 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class FileExplorer {
     Scanner sc = new Scanner(System.in);
     final String folderPath = "C:\\Baitap";
     final File folder = new File(folderPath);
     final String fileExtension = ".txt";
-
+    final Pattern pt = Pattern.compile("[\\[\\]\\w\\-(){}.]{1,20}");
     boolean alreadyExecuted = false;
 
     private void mainMenu() {
@@ -116,14 +119,12 @@ public class FileExplorer {
                 checkFound = true;
             }
         }
-        if (!checkFound){
+        if (!checkFound) {
             System.out.println("File not found!");
-        }
-        else {
+        } else {
             System.out.println("===========================================");
             done();
         }
-
     }
 
     private void move() {
@@ -183,72 +184,62 @@ public class FileExplorer {
 
     private void copy() {
         String source = validateFileNameWithMessage("Enter file name to copy:");
-        if (checkExistFile(mapFileNameFull(source))) {
-            String destination = copyExistFileName(source);
-
-            try {
-                Files.copy(Paths.get(mapFileNameFull(source)), Paths.get(destination));
-
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-            done();
-        } else {
-            System.err.println("File do not exist!");
+        source = mapFileNameExtension(source);
+        String destination = copyExistFileName(source);
+        try {
+            Files.copy(Paths.get(mapFileNameNoExtension(source)), Paths.get(mapFileNameNoExtension(destination)));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-
+        done();
     }
 
     private String copyExistFileName(String source) {
-        if (checkExistFile(mapFileNameNoExtension(source).concat(" - Copy").concat(fileExtension))) {
-            int max = 2;
-            for (final File fileEntry : folder.listFiles()) {
-                if (fileEntry.getName().contains(validateFileName(source).concat(" - Copy("))) {
-                    int number = Integer.parseInt(String.valueOf(fileEntry.getName().charAt(fileEntry.getName().length() - 6)));
-                    if (number > max) {
-                        max = number;
-                    }
-                }
+        File[] list = folder.listFiles();
+        Set<String> names = new HashSet<>();
+        for (File file : list) {
+            names.add(file.getName());
+        }
+        int index = source.lastIndexOf(".");
+        String name = source.substring(0, index);
+        String ex = source.substring(index);
+        int duplicate = 0;
+        while (true) {
+            String dup = "";
+            if (duplicate == 1) {
+                dup = " - Copy";
+            } else if (duplicate > 1) {
+                dup = " - Copy(" + duplicate + ")";
             }
-            return mapFileNameNoExtension(source).concat(" - Copy(" + (max + 1) + ")").concat(fileExtension);
-        } else {
-            return mapFileNameNoExtension(source).concat(" - Copy").concat(fileExtension);
+            String newName = name + dup + ex;
+            if (!names.contains(newName))
+                return newName;
+            duplicate++;
         }
     }
 
-
     private boolean checkExistFile(String source) {
         File file = new File(source);
-        if (file.exists()) {
-            return true;
-        } else {
-            return false;
-
-        }
+        return file.exists();
     }
 
     private String mapFileNameFull(String fileName) {
         fileName = validateFileName(fileName);
         return folderPath.concat("\\").concat(fileName.concat(fileExtension));
-
     }
 
     private String mapFileNameFullMess(String mess) {
         String fileName = validateFileNameWithMessage(mess);
         return folderPath.concat("\\").concat(fileName.concat(fileExtension));
-
     }
 
     private String mapFileNameNoExtension(String fileName) {
         return folderPath.concat("\\").concat(fileName);
-
     }
 
     private String mapFileNameExtension(String fileName) {
         return fileName.concat(fileExtension);
-
     }
-
 
     private void newFile() {
         String fileName = mapFileNameFullMess("Enter the file name:");
@@ -261,7 +252,6 @@ public class FileExplorer {
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-
         }
         done();
     }
@@ -269,7 +259,6 @@ public class FileExplorer {
     private void done() {
         System.out.println("Executed successfully!");
         System.out.println("===========================================");
-
     }
 
     private void existFileMenu(String fileDir) {
@@ -282,7 +271,6 @@ public class FileExplorer {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
     }
 
     private void search1() {
@@ -292,10 +280,9 @@ public class FileExplorer {
                 return name.startsWith(keyword) && name.endsWith(fileExtension);
             }
         });
-        if (matchingFiles.length == 0){
+        if (matchingFiles.length == 0) {
             System.out.println("File not found!");
-        }
-        else {
+        } else {
             for (File file : matchingFiles) {
                 System.out.println(file.getName());
             }
@@ -336,19 +323,14 @@ public class FileExplorer {
     }
 
     private String validateFilNameString(String folderName) throws Exception {
-        for (int i = 0; i < folderName.length(); i++) {
-            String temp = "" + folderName.charAt(i);
-            if (!temp.matches("[\\w \\-(){}]") | folderName.length() > 20) {
-                throw new Exception();
-            }
-        }
-        return folderName;
+        if (pt.matcher(folderName).matches())
+            return folderName;
+        else
+            throw new Exception();
     }
-
 
     public static void main(String[] args) {
         FileExplorer app = new FileExplorer();
         app.mainMenu();
-
     }
 }
