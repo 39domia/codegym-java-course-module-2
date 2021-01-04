@@ -29,9 +29,9 @@ public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
 
-        System.out.printf("Enter source file:");
+        System.out.println("Enter source file:");
         String sourcePath = in.nextLine();
-        System.out.printf("Enter destination file:");
+        System.out.println("Enter destination file:");
         String destPath = in.nextLine();
 
         File sourceFile = new File(sourcePath);
