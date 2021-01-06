@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 
-class Student implements Comparable<Student>, Serializable  {
+class Student implements Comparable<Student>, Serializable {
     private static final long serialVersionUID = 1L;
     private static int autoId;
     private int id;
@@ -15,15 +15,15 @@ class Student implements Comparable<Student>, Serializable  {
 
     private void initPointFactor1() {
         points.add(pointFactor1);
-        double point1 = 0;
-        double point2 = 0;
+        double point1 = -1;
+        double point2 = -1;
         pointFactor1.add(point1);
         pointFactor1.add(point2);
     }
 
     private void initPointFactor2() {
         points.add(pointFactor2);
-        double point1 = 0;
+        double point1 = -1;
         pointFactor2.add(point1);
     }
 
@@ -33,7 +33,7 @@ class Student implements Comparable<Student>, Serializable  {
 
     private void initPointFactor3() {
         points.add(pointFactor3);
-        double point1 = 0;
+        double point1 = -1;
         pointFactor3.add(point1);
     }
 
@@ -61,16 +61,31 @@ class Student implements Comparable<Student>, Serializable  {
         double totalPointFactor1 = 0;
         double totalPointFactor2 = 0;
         double totalPointFactor3 = 0;
-        for (Double aDouble : pointFactor1) {
-            totalPointFactor1 += aDouble;
+        int countNegativePointFactor1 = 0;
+        int countNegativePointFactor2 = 0;
+        int countNegativePointFactor3 = 0;
+        for (Double point : pointFactor1) {
+            if (point < 0) {
+                totalPointFactor1 += 0;
+                countNegativePointFactor1++;
+            } else
+                totalPointFactor1 += point;
         }
-        for (Double aDouble : pointFactor2) {
-            totalPointFactor2 += aDouble * 2;
+        for (Double point : pointFactor2) {
+            if (point < 0) {
+                totalPointFactor2 += 0;
+                countNegativePointFactor2++;
+            } else
+                totalPointFactor2 += point * 2;
         }
-        for (Double aDouble : pointFactor3) {
-            totalPointFactor3 += aDouble * 3;
+        for (Double point : pointFactor3) {
+            if (point < 0) {
+                totalPointFactor3 += 0;
+                countNegativePointFactor3++;
+            } else
+                totalPointFactor3 += point * 3;
         }
-        double totalNumberOfPoints = pointFactor1.size() + (pointFactor2.size() * 2) + (pointFactor3.size() * 3);
+        double totalNumberOfPoints = (pointFactor1.size() - countNegativePointFactor1) + ((pointFactor2.size() - countNegativePointFactor2) * 2) + ((pointFactor3.size() - countNegativePointFactor3) * 3);
         averagePoint = (totalPointFactor1 + totalPointFactor2 + totalPointFactor3) / totalNumberOfPoints;
     }
 

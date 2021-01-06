@@ -4,6 +4,7 @@ import java.util.*;
 public class ManagementApp {
     Scanner sc = new Scanner(System.in);
     static HashMap<Integer, Student> map = new HashMap<>();
+
     static {
         try {
             FileInputStream fileIn = new FileInputStream("data.txt");
@@ -16,19 +17,18 @@ public class ManagementApp {
     }
 
     public void showMenu() {
-        int choose = -1;
-        while (choose != 0) {
+        while (true) {
             System.out.println("Menu");
             System.out.println("1. Xem danh sách học viên");
             System.out.println("2. Thêm học viên");
             System.out.println("3. Sửa thông tin học viên");
             System.out.println("4. Xoá học viên");
-            System.out.println("5. Nhập/sửa TỪNG ĐIỂM học viên");
-            System.out.println("6. Nhập/sửa TOÀN BỘ ĐIỂM học viên");
+            System.out.println("5. Nhập điểm học viên");
+            System.out.println("6. Sửa điểm học viên");
             System.out.println("7. Xếp loại học viên");
             System.out.println("0. Thoát chương trình");
             System.out.println("____________________________________________");
-            choose = validateNumberGreaterThan0("Mời nhập:");
+            int choose = validateNumberGreaterThan0("Mời nhập:");
             switch (choose) {
                 case 1:
                     showStudentList();
@@ -43,17 +43,17 @@ public class ManagementApp {
                     deleteStudent();
                     break;
                 case 5:
-                    insertEditEachPoint();
+                    insertPoint();
                     break;
                 case 6:
-                    insertEditAllPoints();
+                    editPoints();
                     break;
                 case 7:
                     gradingStudents();
                     break;
                 case 0:
                     System.out.println("Cảm ơn đã sử dụng, tạm biệt!");
-                    break;
+                    return;
                 default:
                     System.err.println("Nhập sai, vui lòng nhập lại");
                     break;
@@ -61,17 +61,220 @@ public class ManagementApp {
         }
     }
 
-    private void insertEditAllPoints() {
+    private void editPoints() {
+        while (true) {
+            System.out.println("Menu Sửa điểm");
+            System.out.println("1. Sửa TỪNG điểm cho một học viên");
+            System.out.println("2. Sửa TOÀN BỘ điểm cho một học viên");
+            System.out.println("3. Sửa TOÀN BỘ điểm cho TOÀN BỘ học viên");
+            System.out.println("0. Trở về menu chính");
+            int choose = validateNumberGreaterThan0("Mời nhập:");
+            switch (choose) {
+                case 1:
+                    editEachPoint();
+                    break;
+                case 2:
+                    editAllPoint();
+                    break;
+                case 3:
+                    editAllPointAllStudent();
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.err.println("Nhập sai, vui lòng nhập lại");
+                    break;
+            }
+        }
+    }
+
+    private void editAllPointAllStudent() {
+        System.out.println("Lưu ý, chức năng này chỉ cho phép sửa những điểm số đã được nhập!\nNhững điểm chưa được nhập sẽ bị bỏ qua!");
+        for (Student student : map.values()) {
+            editAllPointNeedID(student.getId());
+        }
+    }
+
+    private void editAllPoint() {
+        System.out.println("Lưu ý, chức năng này chỉ cho phép sửa những điểm số đã được nhập!\nNhững điểm chưa được nhập sẽ bị bỏ qua!");
+        int id = validateID("Nhập ID học viên để sửa điểm, nhập 0 để trở về menu");
+        if (id == 0) return;
+        editAllPointNeedID(id);
+    }
+
+    private void editAllPointNeedID(int id) {
+        displayStudentInfo(id);
+        if (!checkInsert(map.get(id).getPointFactor1().get(0))) {
+            System.out.println("Điểm học viên lần thứ 1 (hệ số 1) chưa được nhập, không thể sửa!");
+
+        } else {
+            double point1 = validatePoints("Nhập điểm học viên lần thứ 1 (hệ số 1)");
+            map.get(id).getPointFactor1().set(0, point1);
+        }
+        if (!checkInsert(map.get(id).getPointFactor1().get(1))) {
+            System.out.println("Điểm học viên lần thứ 2 (hệ số 1) chưa được nhập, không thể sửa!");
+        } else {
+            double point2 = validatePoints("Nhập điểm học viên lần thứ 2 (hệ số 1)");
+            map.get(id).getPointFactor1().set(1, point2);
+        }
+        if (!checkInsert(map.get(id).getPointFactor2().get(0))) {
+            System.out.println("Điểm học viên lần thứ 3 (hệ số 2) chưa được nhập, không thể sửa!");
+        } else {
+            double point3 = validatePoints("Nhập điểm học viên lần thứ 3 (hệ số 2)");
+            map.get(id).getPointFactor2().set(0, point3);
+        }
+        if (!checkInsert(map.get(id).getPointFactor3().get(0))) {
+            System.out.println("Điểm học viên lần thứ 4 (hệ số 3) chưa được nhập, không thể sửa!");
+        } else {
+            double point4 = validatePoints("Nhập điểm học viên lần thứ 4 (hệ số 3)");
+            map.get(id).getPointFactor3().set(0, point4);
+        }
+        displayStudentInfo(id);
+        map.get(id).setAveragePoint();
+        addFile();
+        done();
+
+    }
+
+    private void editEachPoint() {
+        int id = validateID("Nhập ID học viên để sửa điểm, nhập 0 để trở về menu");
+        if (id == 0) return;
+        displayStudentInfo(id);
+        int choise = -1;
+        while (choise != 0) {
+            System.out.println("1. Sửa điểm học viên lần thứ 1 (hệ số 1)");
+            System.out.println("2. Sửa điểm học viên lần thứ 2 (hệ số 1)");
+            System.out.println("3. Sửa điểm học viên lần thứ 3 (hệ số 2)");
+            System.out.println("4. Sửa điểm học viên lần thứ 4 (hệ số 3)");
+            System.out.println("0. Trở về menu");
+            choise = validateNumberGreaterThan0("Mời nhập:");
+            switch (choise) {
+                case 1:
+                    if (!checkInsert(map.get(id).getPointFactor1().get(0))) {
+                        System.err.println("Điểm chưa được nhập, hãy nhập điểm trước!");
+                        break;
+                    } else {
+                        double point = validatePoints("Nhập điểm:");
+                        map.get(id).getPointFactor1().set(0, point);
+                        done();
+                        displayStudentInfo(id);
+                    }
+                    break;
+                case 2:
+                    if (!checkInsert(map.get(id).getPointFactor1().get(1))) {
+                        System.err.println("Điểm chưa được nhập, hãy nhập điểm trước!");
+                        break;
+                    } else {
+                        double point = validatePoints("Nhập điểm:");
+                        map.get(id).getPointFactor1().set(1, point);
+                        done();
+                        displayStudentInfo(id);
+                    }
+                    break;
+                case 3:
+                    if (!checkInsert(map.get(id).getPointFactor2().get(0))) {
+                        System.err.println("Điểm chưa được nhập, hãy nhập điểm trước!");
+                        break;
+                    } else {
+                        double point = validatePoints("Nhập điểm:");
+                        map.get(id).getPointFactor2().set(0, point);
+                        done();
+                        displayStudentInfo(id);
+                    }
+                    break;
+                case 4:
+                    if (!checkInsert(map.get(id).getPointFactor3().get(0))) {
+                        System.err.println("Điểm chưa được nhập, hãy nhập điểm trước!");
+                        break;
+                    } else {
+                        double point1 = validatePoints("Nhập điểm:");
+                        map.get(id).getPointFactor3().set(0, point1);
+                        done();
+                        displayStudentInfo(id);
+                    }
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Nhập sai, mời nhập lại");
+                    break;
+            }
+        }
+        map.get(id).setAveragePoint();
+        addFile();
+        done();
+
+    }
+
+    private void insertPoint() {
+        while (true) {
+            System.out.println("Menu Nhập điểm");
+            System.out.println("1. Nhập TỪNG điểm cho một học viên");
+            System.out.println("2. Nhập TOÀN BỘ điểm cho một học viên");
+            System.out.println("3. Nhập TOÀN BỘ điểm cho TOÀN BỘ học viên");
+            System.out.println("0. Trở về menu chính");
+            int choose = validateNumberGreaterThan0("Mời nhập:");
+            switch (choose) {
+                case 1:
+                    insertEachPoint();
+                    break;
+                case 2:
+                    insertAllPoint();
+                    break;
+                case 3:
+                    insertAllPointAllStudent();
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.err.println("Nhập sai, vui lòng nhập lại");
+                    break;
+            }
+        }
+    }
+
+    private void insertAllPointAllStudent() {
+        System.out.println("Lưu ý, chức năng này chỉ cho phép nhập những điểm số chưa được nhập!\nNhững điểm đã được nhập sẽ bị bỏ qua!");
+        for (Student student : map.values()) {
+            insertAllPointNeedID(student.getId());
+        }
+    }
+
+    private void insertAllPoint() {
+        System.out.println("Lưu ý, chức năng này chỉ cho phép nhập những điểm số chưa được nhập!\nNhững điểm đã được nhập sẽ bị bỏ qua!");
         int id = validateID("Nhập ID học viên để nhập điểm, nhập 0 để trở về menu");
         if (id == 0) return;
-        double point1 = validatePoints("Nhập điểm học viên lần thứ 1 (hệ số 1)");
-        double point2 = validatePoints("Nhập điểm học viên lần thứ 2 (hệ số 1)");
-        double point3 = validatePoints("Nhập điểm học viên lần thứ 3 (hệ số 2)");
-        double point4 = validatePoints("Nhập điểm học viên lần thứ 4 (hệ số 3)");
-        map.get(id).getPointFactor1().set(0, point1);
-        map.get(id).getPointFactor1().set(1, point2);
-        map.get(id).getPointFactor2().set(0, point3);
-        map.get(id).getPointFactor3().set(0, point4);
+        insertAllPointNeedID(id);
+    }
+
+    private void insertAllPointNeedID(int id) {
+        displayStudentInfo(id);
+        if (checkInsert(map.get(id).getPointFactor1().get(0))) {
+            System.out.println("Điểm học viên lần thứ 1 (hệ số 1) đã được nhập, không thể nhập thêm!");
+
+        } else {
+            double point1 = validatePoints("Nhập điểm học viên lần thứ 1 (hệ số 1)");
+            map.get(id).getPointFactor1().set(0, point1);
+        }
+        if (checkInsert(map.get(id).getPointFactor1().get(1))) {
+            System.out.println("Điểm học viên lần thứ 2 (hệ số 1) đã được nhập, không thể nhập thêm!");
+        } else {
+            double point2 = validatePoints("Nhập điểm học viên lần thứ 2 (hệ số 1)");
+            map.get(id).getPointFactor1().set(1, point2);
+        }
+        if (checkInsert(map.get(id).getPointFactor2().get(0))) {
+            System.out.println("Điểm học viên lần thứ 3 (hệ số 2) đã được nhập, không thể nhập thêm!");
+        } else {
+            double point3 = validatePoints("Nhập điểm học viên lần thứ 3 (hệ số 2)");
+            map.get(id).getPointFactor2().set(0, point3);
+        }
+        if (checkInsert(map.get(id).getPointFactor3().get(0))) {
+            System.out.println("Điểm học viên lần thứ 4 (hệ số 3) đã được nhập, không thể nhập thêm!");
+        } else {
+            double point4 = validatePoints("Nhập điểm học viên lần thứ 4 (hệ số 3)");
+            map.get(id).getPointFactor3().set(0, point4);
+        }
+        displayStudentInfo(id);
         map.get(id).setAveragePoint();
         addFile();
         done();
@@ -99,25 +302,25 @@ public class ManagementApp {
                         if (j == 0) {
                             System.out.format("||%-3d | ", students.get(i).getId());
                             System.out.format("%-25s | ", students.get(i).getName());
-                            System.out.format("%-10.1f| ", students.get(i).getPointFactor1().get(j));
-                            System.out.format("%-10.1f| ", students.get(i).getPointFactor2().get(j));
-                            System.out.format("%-10.1f| ", students.get(i).getPointFactor3().get(j));
-                            System.out.format("%-10.1f || \n", students.get(i).getAveragePoint());
+                            System.out.format("%-10s| ", displayPointFactor1List(students, i, j));
+                            System.out.format("%-10s| ", displayPointFactor2List(students, i, j));
+                            System.out.format("%-10s| ", displayPointFactor3List(students, i, j));
+                            System.out.format("%-10.2f || \n", students.get(i).getAveragePoint());
                         } else {
                             System.out.format("||%-3s | ", "");
                             System.out.format("%-25s | ", "");
                             try {
-                                System.out.format("%-10.1f| ", students.get(i).getPointFactor1().get(j));
+                                System.out.format("%-10s| ", displayPointFactor1List(students, i, j));
                             } catch (IndexOutOfBoundsException e) {
                                 System.out.format("%-10s| ", " ");
                             }
                             try {
-                                System.out.format("%-10.1f| ", students.get(i).getPointFactor2().get(j));
+                                System.out.format("%-10s| ", displayPointFactor2List(students, i, j));
                             } catch (IndexOutOfBoundsException e) {
                                 System.out.format("%-10s| ", " ");
                             }
                             try {
-                                System.out.format("%-10.1f| ", students.get(i).getPointFactor3().get(j));
+                                System.out.format("%-10s| ", displayPointFactor3List(students, i, j));
                             } catch (IndexOutOfBoundsException e) {
                                 System.out.format("%-10s| ", " ");
                             }
@@ -134,8 +337,59 @@ public class ManagementApp {
         System.out.println("-----------------------------------------------------------------------------------------");
     }
 
+    private String displayPointFactor1List(List<Student> students, int i, int j) {
+        if (students.get(i).getPointFactor1().get(j) < 0 | students.get(i).getPointFactor1().get(j) > 10) {
+            return "Chưa nhập";
+        } else {
+            String result = "" + students.get(i).getPointFactor1().get(j);
+            return result;
+        }
+    }
+
+
+    private String displayPointFactor2List(List<Student> students, int i, int j) {
+        if (students.get(i).getPointFactor2().get(j) < 0 | students.get(i).getPointFactor2().get(j) > 10) {
+            return "Chưa nhập";
+        } else {
+            return "" + students.get(i).getPointFactor2().get(j);
+        }
+    }
+
+    private String displayPointFactor3List(List<Student> students, int i, int j) {
+        if (students.get(i).getPointFactor3().get(j) < 0 | students.get(i).getPointFactor3().get(j) > 10) {
+            return "Chưa nhập";
+        } else {
+            return "" + students.get(i).getPointFactor3().get(j);
+        }
+    }
+
+    private String displayPointFactor1Map(HashMap<Integer, Student> map, int id, int i) {
+        if (map.get(id).getPointFactor1().get(i) < 0 | map.get(id).getPointFactor1().get(i) > 10) {
+            return "Chưa nhập";
+        } else {
+            return "" + map.get(id).getPointFactor1().get(i);
+        }
+    }
+
+    private String displayPointFactor2Map(HashMap<Integer, Student> map, int id, int i) {
+        if (map.get(id).getPointFactor2().get(i) < 0 | map.get(id).getPointFactor2().get(i) > 10) {
+            return "Chưa nhập";
+        } else {
+            return "" + map.get(id).getPointFactor2().get(i);
+        }
+    }
+
+    private String displayPointFactor3Map(HashMap<Integer, Student> map, int id, int i) {
+        if (map.get(id).getPointFactor3().get(i) < 0 | map.get(id).getPointFactor3().get(i) > 10) {
+            return "Chưa nhập";
+        } else {
+            return "" + map.get(id).getPointFactor3().get(i);
+        }
+    }
+
     private void showStudentList() {
         List<Student> listStudent = new ArrayList<>(map.values());
+
         showStudent(listStudent, Student.getAutoId());
     }
 
@@ -189,8 +443,8 @@ public class ManagementApp {
             str[0] = str[0].toUpperCase();
             StringBuilder nameBuilder = new StringBuilder(str[0]);
             for (int i = 1; i < str.length; i++) {
-                if(str[i].equals(" ")){
-                    str[i+1] = str[i+1].toUpperCase();
+                if (str[i].equals(" ")) {
+                    str[i + 1] = str[i + 1].toUpperCase();
                 }
                 nameBuilder.append(str[i]);
             }
@@ -234,10 +488,10 @@ public class ManagementApp {
         }
     }
 
-    public int validatePoints(String mess) {
+    public double validatePoints(String mess) {
         System.out.println(mess);
         try {
-            int point = getInt();
+            double point = getDouble();
             if (point > 10 || point < 0) {
                 throw new Exception();
             } else {
@@ -266,14 +520,32 @@ public class ManagementApp {
     private void deleteStudent() {
         int id = validateID("Nhập ID để xóa, nhập 0 để trở về menu");
         if (id == 0) return;
-        map.remove(id);
-        addFile();
-        done();
+        displayStudentInfo(id);
+        if (confirmMenu()) {
+            map.remove(id);
+            addFile();
+            done();
+        }
     }
 
-    private void insertEditEachPoint() {
+    private boolean confirmMenu() {
+        while (true) {
+            int choise = validateNumberGreaterThan0("Bạn chắc chắn muốn xóa học viên này?\n1. Có\n2. Không");
+            switch (choise) {
+                case 1:
+                    return true;
+                case 2:
+                    return false;
+                default:
+                    System.err.println("Chỉ 'Có' hoặc 'Không'!");
+            }
+        }
+    }
+
+    private void insertEachPoint() {
         int id = validateID("Nhập ID học viên để nhập điểm, nhập 0 để trở về menu");
         if (id == 0) return;
+        displayStudentInfo(id);
         int choise = -1;
         while (choise != 0) {
             System.out.println("1. Nhập điểm học viên lần thứ 1 (hệ số 1)");
@@ -284,24 +556,48 @@ public class ManagementApp {
             choise = validateNumberGreaterThan0("Mời nhập:");
             switch (choise) {
                 case 1:
-                    double point1 = validatePoints("Nhập điểm:");
-                    map.get(id).getPointFactor1().set(0, point1);
-                    done();
+                    if (checkInsert(map.get(id).getPointFactor1().get(0))) {
+                        System.err.println("Điểm đã được nhập, không thể nhập thêm!");
+                        break;
+                    } else {
+                        double point = validatePoints("Nhập điểm:");
+                        map.get(id).getPointFactor1().set(0, point);
+                        done();
+                        displayStudentInfo(id);
+                    }
                     break;
                 case 2:
-                    double point2 = validatePoints("Nhập điểm:");
-                    map.get(id).getPointFactor1().set(1, point2);
-                    done();
+                    if (checkInsert(map.get(id).getPointFactor1().get(1))) {
+                        System.err.println("Điểm đã được nhập, không thể nhập thêm!");
+                        break;
+                    } else {
+                        double point = validatePoints("Nhập điểm:");
+                        map.get(id).getPointFactor1().set(1, point);
+                        done();
+                        displayStudentInfo(id);
+                    }
                     break;
                 case 3:
-                    double point3 = validatePoints("Nhập điểm:");
-                    map.get(id).getPointFactor2().set(0, point3);
-                    done();
+                    if (checkInsert(map.get(id).getPointFactor2().get(0))) {
+                        System.err.println("Điểm đã được nhập, không thể nhập thêm!");
+                        break;
+                    } else {
+                        double point = validatePoints("Nhập điểm:");
+                        map.get(id).getPointFactor2().set(0, point);
+                        done();
+                        displayStudentInfo(id);
+                    }
                     break;
                 case 4:
-                    double point4 = validatePoints("Nhập điểm:");
-                    map.get(id).getPointFactor3().set(0, point4);
-                    done();
+                    if (checkInsert(map.get(id).getPointFactor3().get(0))) {
+                        System.err.println("Điểm đã được nhập, không thể nhập thêm!");
+                        break;
+                    } else {
+                        double point1 = validatePoints("Nhập điểm:");
+                        map.get(id).getPointFactor3().set(0, point1);
+                        done();
+                        displayStudentInfo(id);
+                    }
                     break;
                 case 0:
                     break;
@@ -315,8 +611,36 @@ public class ManagementApp {
         done();
     }
 
+    private boolean checkInsert(Double point) {
+        return !(point < 0 | point > 10);
+    }
+
+    private void displayStudentInfo(int id) {
+        String name = map.get(id).getName();
+        System.out.println("Học sinh: " + name + "\t");
+        System.out.print("Điểm hệ 1: ");
+        for (int i = 0; i < map.get(id).getPointFactor1().size(); i++) {
+            System.out.print(displayPointFactor1Map(map, id, i));
+            System.out.print("\t|");
+        }
+        System.out.print("Điểm hệ 2: ");
+        for (int i = 0; i < map.get(id).getPointFactor2().size(); i++) {
+            System.out.print(displayPointFactor2Map(map, id, i));
+            System.out.print("\t|");
+        }
+        System.out.print("Điểm hệ 3: ");
+        for (int i = 0; i < map.get(id).getPointFactor3().size(); i++) {
+            System.out.print(displayPointFactor3Map(map, id, i));
+        }
+        System.out.println();
+    }
+
     public int getInt() {
         return Integer.parseInt(sc.nextLine());
+    }
+
+    public double getDouble() {
+        return Double.parseDouble(sc.nextLine());
     }
 
     @Override
