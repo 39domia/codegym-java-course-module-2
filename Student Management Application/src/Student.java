@@ -11,7 +11,7 @@ class Student implements Comparable<Student>, Serializable {
     private ArrayList<Double> pointFactor2 = new ArrayList<>();
     private ArrayList<Double> pointFactor3 = new ArrayList<>();
 
-    private double averagePoint;
+    private double averagePoint = -1;
 
     private void initPointFactor1() {
         points.add(pointFactor1);

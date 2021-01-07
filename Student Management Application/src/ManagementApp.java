@@ -90,8 +90,13 @@ public class ManagementApp {
 
     private void editAllPointAllStudent() {
         System.out.println("Lưu ý, chức năng này chỉ cho phép sửa những điểm số đã được nhập!\nNhững điểm chưa được nhập sẽ bị bỏ qua!");
-        for (Student student : map.values()) {
-            editAllPointNeedID(student.getId());
+        System.out.println("Ấn 'x' để ngắt nhập bất cứ lúc nào");
+        try {
+            for (Student student : map.values()) {
+                editAllPointNeedID(student.getId(), false);
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ngắt nhập");
         }
     }
 
@@ -99,41 +104,40 @@ public class ManagementApp {
         System.out.println("Lưu ý, chức năng này chỉ cho phép sửa những điểm số đã được nhập!\nNhững điểm chưa được nhập sẽ bị bỏ qua!");
         int id = validateID("Nhập ID học viên để sửa điểm, nhập 0 để trở về menu");
         if (id == 0) return;
-        editAllPointNeedID(id);
+        editAllPointNeedID(id, true);
     }
 
-    private void editAllPointNeedID(int id) {
+    private void editAllPointNeedID(int id, boolean displayMess) {
         displayStudentInfo(id);
-        if (!checkInsert(map.get(id).getPointFactor1().get(0))) {
-            System.out.println("Điểm học viên lần thứ 1 (hệ số 1) chưa được nhập, không thể sửa!");
-
-        } else {
+        Student student = map.get(id);
+        if (checkInsert(student.getPointFactor1().get(0))) {
             double point1 = validatePoints("Nhập điểm học viên lần thứ 1 (hệ số 1)");
-            map.get(id).getPointFactor1().set(0, point1);
+            student.getPointFactor1().set(0, point1);
+        } else if (displayMess) {
+            System.out.println("Điểm học viên lần thứ 1 (hệ số 1) chưa được nhập, không thể sửa!");
         }
-        if (!checkInsert(map.get(id).getPointFactor1().get(1))) {
-            System.out.println("Điểm học viên lần thứ 2 (hệ số 1) chưa được nhập, không thể sửa!");
-        } else {
+        if (checkInsert(student.getPointFactor1().get(1))) {
             double point2 = validatePoints("Nhập điểm học viên lần thứ 2 (hệ số 1)");
-            map.get(id).getPointFactor1().set(1, point2);
+            student.getPointFactor1().set(1, point2);
+        } else if (displayMess) {
+            System.out.println("Điểm học viên lần thứ 2 (hệ số 1) chưa được nhập, không thể sửa!");
         }
-        if (!checkInsert(map.get(id).getPointFactor2().get(0))) {
-            System.out.println("Điểm học viên lần thứ 3 (hệ số 2) chưa được nhập, không thể sửa!");
-        } else {
+        if (checkInsert(student.getPointFactor2().get(0))) {
             double point3 = validatePoints("Nhập điểm học viên lần thứ 3 (hệ số 2)");
-            map.get(id).getPointFactor2().set(0, point3);
+            student.getPointFactor2().set(0, point3);
+        } else if (displayMess) {
+            System.out.println("Điểm học viên lần thứ 3 (hệ số 2) chưa được nhập, không thể sửa!");
         }
-        if (!checkInsert(map.get(id).getPointFactor3().get(0))) {
-            System.out.println("Điểm học viên lần thứ 4 (hệ số 3) chưa được nhập, không thể sửa!");
-        } else {
+        if (checkInsert(student.getPointFactor3().get(0))) {
             double point4 = validatePoints("Nhập điểm học viên lần thứ 4 (hệ số 3)");
-            map.get(id).getPointFactor3().set(0, point4);
+            student.getPointFactor3().set(0, point4);
+        } else if (displayMess) {
+            System.out.println("Điểm học viên lần thứ 4 (hệ số 3) chưa được nhập, không thể sửa!");
         }
         displayStudentInfo(id);
-        map.get(id).setAveragePoint();
+        student.setAveragePoint();
         addFile();
         done();
-
     }
 
     private void editEachPoint() {
@@ -235,8 +239,13 @@ public class ManagementApp {
 
     private void insertAllPointAllStudent() {
         System.out.println("Lưu ý, chức năng này chỉ cho phép nhập những điểm số chưa được nhập!\nNhững điểm đã được nhập sẽ bị bỏ qua!");
-        for (Student student : map.values()) {
-            insertAllPointNeedID(student.getId());
+        System.out.println("Ấn 'x' để ngắt nhập bất cứ lúc nào");
+        try {
+            for (Student student : map.values()) {
+                insertAllPointNeedID(student.getId(), false);
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ngắt nhập");
         }
     }
 
@@ -244,40 +253,49 @@ public class ManagementApp {
         System.out.println("Lưu ý, chức năng này chỉ cho phép nhập những điểm số chưa được nhập!\nNhững điểm đã được nhập sẽ bị bỏ qua!");
         int id = validateID("Nhập ID học viên để nhập điểm, nhập 0 để trở về menu");
         if (id == 0) return;
-        insertAllPointNeedID(id);
+        insertAllPointNeedID(id, true);
     }
 
-    private void insertAllPointNeedID(int id) {
+    private void insertAllPointNeedID(int id, boolean displayMess) {
         displayStudentInfo(id);
-        if (checkInsert(map.get(id).getPointFactor1().get(0))) {
-            System.out.println("Điểm học viên lần thứ 1 (hệ số 1) đã được nhập, không thể nhập thêm!");
-
-        } else {
+        Student student = map.get(id);
+        int count = 0;
+        if (!checkInsert(student.getPointFactor1().get(0))) {
             double point1 = validatePoints("Nhập điểm học viên lần thứ 1 (hệ số 1)");
-            map.get(id).getPointFactor1().set(0, point1);
+            student.getPointFactor1().set(0, point1);
+            count++;
+        } else if (displayMess) {
+            System.out.println("Điểm học viên lần thứ 1 (hệ số 1) đã được nhập, không thể nhập thêm!");
         }
-        if (checkInsert(map.get(id).getPointFactor1().get(1))) {
-            System.out.println("Điểm học viên lần thứ 2 (hệ số 1) đã được nhập, không thể nhập thêm!");
-        } else {
+        if (!checkInsert(student.getPointFactor1().get(1))) {
             double point2 = validatePoints("Nhập điểm học viên lần thứ 2 (hệ số 1)");
-            map.get(id).getPointFactor1().set(1, point2);
+            student.getPointFactor1().set(1, point2);
+            count++;
+        } else if (displayMess) {
+            System.out.println("Điểm học viên lần thứ 2 (hệ số 1) đã được nhập, không thể nhập thêm!");
         }
-        if (checkInsert(map.get(id).getPointFactor2().get(0))) {
-            System.out.println("Điểm học viên lần thứ 3 (hệ số 2) đã được nhập, không thể nhập thêm!");
-        } else {
+        if (!checkInsert(student.getPointFactor2().get(0))) {
             double point3 = validatePoints("Nhập điểm học viên lần thứ 3 (hệ số 2)");
-            map.get(id).getPointFactor2().set(0, point3);
+            student.getPointFactor2().set(0, point3);
+            count++;
+        } else if (displayMess) {
+            System.out.println("Điểm học viên lần thứ 3 (hệ số 2) đã được nhập, không thể nhập thêm!");
         }
-        if (checkInsert(map.get(id).getPointFactor3().get(0))) {
-            System.out.println("Điểm học viên lần thứ 4 (hệ số 3) đã được nhập, không thể nhập thêm!");
-        } else {
+        if (!checkInsert(student.getPointFactor3().get(0))) {
             double point4 = validatePoints("Nhập điểm học viên lần thứ 4 (hệ số 3)");
-            map.get(id).getPointFactor3().set(0, point4);
+            student.getPointFactor3().set(0, point4);
+            count++;
+        } else if (displayMess) {
+            System.out.println("Điểm học viên lần thứ 4 (hệ số 3) đã được nhập, không thể nhập thêm!");
         }
-        displayStudentInfo(id);
-        map.get(id).setAveragePoint();
+        student.setAveragePoint();
         addFile();
-        done();
+        if (count > 0) {
+            displayStudentInfo(id);
+            done();
+        } else {
+            System.out.println("Toàn bộ điểm của học viên này đã được nhập");
+        }
     }
 
     private void gradingStudents() {
@@ -289,7 +307,7 @@ public class ManagementApp {
 
     private void showStudent(List<Student> students, int size) {
         System.out.format("||%-3s | ", "ID");
-        System.out.format("%-25s | ", "Tên");
+        System.out.format("%-30s | ", "Tên");
         System.out.format("%-10s| ", "Điểm hs1");
         System.out.format("%-9s | ", "Điểm hs2");
         System.out.format("%-9s | ", "Điểm hs3");
@@ -301,14 +319,14 @@ public class ManagementApp {
                     if (students.get(i) != null) {
                         if (j == 0) {
                             System.out.format("||%-3d | ", students.get(i).getId());
-                            System.out.format("%-25s | ", students.get(i).getName());
+                            System.out.format("%-30s | ", students.get(i).getName());
                             System.out.format("%-10s| ", displayPointFactor1List(students, i, j));
                             System.out.format("%-10s| ", displayPointFactor2List(students, i, j));
                             System.out.format("%-10s| ", displayPointFactor3List(students, i, j));
-                            System.out.format("%-10.2f || \n", students.get(i).getAveragePoint());
+                            System.out.format("%-10s || \n", displayAveragePointList(students, i));
                         } else {
                             System.out.format("||%-3s | ", "");
-                            System.out.format("%-25s | ", "");
+                            System.out.format("%-30s | ", "");
                             try {
                                 System.out.format("%-10s| ", displayPointFactor1List(students, i, j));
                             } catch (IndexOutOfBoundsException e) {
@@ -341,11 +359,9 @@ public class ManagementApp {
         if (students.get(i).getPointFactor1().get(j) < 0 | students.get(i).getPointFactor1().get(j) > 10) {
             return "Chưa nhập";
         } else {
-            String result = "" + students.get(i).getPointFactor1().get(j);
-            return result;
+            return "" + students.get(i).getPointFactor1().get(j);
         }
     }
-
 
     private String displayPointFactor2List(List<Student> students, int i, int j) {
         if (students.get(i).getPointFactor2().get(j) < 0 | students.get(i).getPointFactor2().get(j) > 10) {
@@ -360,6 +376,14 @@ public class ManagementApp {
             return "Chưa nhập";
         } else {
             return "" + students.get(i).getPointFactor3().get(j);
+        }
+    }
+
+    private String displayAveragePointList(List<Student> students, int i) {
+        if (students.get(i).getAveragePoint() < 0 | students.get(i).getAveragePoint() > 10) {
+            return "Chưa nhập";
+        } else {
+            return "" + students.get(i).getAveragePoint();
         }
     }
 
@@ -427,7 +451,7 @@ public class ManagementApp {
         System.out.println(mess);
         try {
             String name = sc.nextLine();
-            if (name.length() > 25) throw new Exception();
+            if (name.length() > 30 | name.length() == 0) throw new Exception();
             for (int i = 0; i < name.length(); i++) {
                 String str = name.charAt(i) + "";
                 if (!str.matches("[a-zA-Z ]")) {
@@ -450,7 +474,7 @@ public class ManagementApp {
             }
             return nameBuilder.toString();
         } catch (Exception e) {
-            System.err.println("Trong tên không được có số hoặc quá dài");
+            System.err.println("Tên không được có số, để trống hoặc quá dài (30)");
             return validateName(mess);
         }
     }
@@ -490,8 +514,11 @@ public class ManagementApp {
 
     public double validatePoints(String mess) {
         System.out.println(mess);
+        String input = sc.nextLine();
+        if (input.equals("x"))
+            throw new IllegalArgumentException();
         try {
-            double point = getDouble();
+            double point = Double.parseDouble(input);
             if (point > 10 || point < 0) {
                 throw new Exception();
             } else {
