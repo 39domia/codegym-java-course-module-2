@@ -207,7 +207,6 @@ public class ManagementApp {
         map.get(id).setAveragePoint();
         addFile();
         done();
-
     }
 
     private void insertPoint() {
@@ -306,43 +305,45 @@ public class ManagementApp {
     }
 
     private void showStudent(List<Student> students, int size) {
-        System.out.format("||%-3s | ", "ID");
-        System.out.format("%-30s | ", "Tên");
-        System.out.format("%-10s| ", "Điểm hs1");
-        System.out.format("%-9s | ", "Điểm hs2");
-        System.out.format("%-9s | ", "Điểm hs3");
-        System.out.format("%-10s || \n", "Điểm TB");
-        System.out.println("-----------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.format("||%-3s |", "ID");
+        System.out.format("%-30s |", "Tên");
+        System.out.format("%-10s |", "Điểm hs1");
+        System.out.format("%-10s |", "Điểm hs2");
+        System.out.format("%-10s |", "Điểm hs3");
+        System.out.format("%-10s ||\n", "Điểm TB");
+        System.out.println("----------------------------------------------------------------------------------------");
         try {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < findMaxNumberOfPoint(); j++) {
                     if (students.get(i) != null) {
                         if (j == 0) {
-                            System.out.format("||%-3d | ", students.get(i).getId());
-                            System.out.format("%-30s | ", students.get(i).getName());
-                            System.out.format("%-10s| ", displayPointFactor1List(students, i, j));
-                            System.out.format("%-10s| ", displayPointFactor2List(students, i, j));
-                            System.out.format("%-10s| ", displayPointFactor3List(students, i, j));
-                            System.out.format("%-10s || \n", displayAveragePointList(students, i));
+                            System.out.format("||%-3d |", students.get(i).getId());
+                            System.out.format("%-30s |", students.get(i).getName());
+                            displayPoint(students.get(i).getPointFactor1().get(j));
+                            displayPoint(students.get(i).getPointFactor2().get(j));
+                            displayPoint(students.get(i).getPointFactor3().get(j));
+                            displayPoint(students.get(i).getAveragePoint());
+                            System.out.println("|");
                         } else {
-                            System.out.format("||%-3s | ", "");
-                            System.out.format("%-30s | ", "");
+                            System.out.format("||%-3s |", "");
+                            System.out.format("%-30s |", "");
                             try {
-                                System.out.format("%-10s| ", displayPointFactor1List(students, i, j));
+                                displayPoint(students.get(i).getPointFactor1().get(j));
                             } catch (IndexOutOfBoundsException e) {
-                                System.out.format("%-10s| ", " ");
+                                System.out.format("%-10s |", " ");
                             }
                             try {
-                                System.out.format("%-10s| ", displayPointFactor2List(students, i, j));
+                                displayPoint(students.get(i).getPointFactor2().get(j));
                             } catch (IndexOutOfBoundsException e) {
-                                System.out.format("%-10s| ", " ");
+                                System.out.format("%-10s |", " ");
                             }
                             try {
-                                System.out.format("%-10s| ", displayPointFactor3List(students, i, j));
+                                displayPoint(students.get(i).getPointFactor3().get(j));
                             } catch (IndexOutOfBoundsException e) {
-                                System.out.format("%-10s| ", " ");
+                                System.out.format("%-10s |", " ");
                             }
-                            System.out.format("%-10s || \n", "");
+                            System.out.format("%-10s ||\n", "");
                         }
                     } else {
                         System.out.print("");
@@ -352,40 +353,16 @@ public class ManagementApp {
         } catch (IndexOutOfBoundsException e) {
             System.out.print("");
         }
-        System.out.println("-----------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------");
     }
 
-    private String displayPointFactor1List(List<Student> students, int i, int j) {
-        if (students.get(i).getPointFactor1().get(j) < 0 | students.get(i).getPointFactor1().get(j) > 10) {
-            return "Chưa nhập";
-        } else {
-            return "" + students.get(i).getPointFactor1().get(j);
-        }
+    private void displayPoint(double point) {
+        if (!(point == -1))
+            System.out.format("%-10.2f |", point);
+        else
+            System.out.format("%-10s |", "Chưa nhập");
     }
 
-    private String displayPointFactor2List(List<Student> students, int i, int j) {
-        if (students.get(i).getPointFactor2().get(j) < 0 | students.get(i).getPointFactor2().get(j) > 10) {
-            return "Chưa nhập";
-        } else {
-            return "" + students.get(i).getPointFactor2().get(j);
-        }
-    }
-
-    private String displayPointFactor3List(List<Student> students, int i, int j) {
-        if (students.get(i).getPointFactor3().get(j) < 0 | students.get(i).getPointFactor3().get(j) > 10) {
-            return "Chưa nhập";
-        } else {
-            return "" + students.get(i).getPointFactor3().get(j);
-        }
-    }
-
-    private String displayAveragePointList(List<Student> students, int i) {
-        if (students.get(i).getAveragePoint() < 0 | students.get(i).getAveragePoint() > 10) {
-            return "Chưa nhập";
-        } else {
-            return "" + students.get(i).getAveragePoint();
-        }
-    }
 
     private String displayPointFactor1Map(HashMap<Integer, Student> map, int id, int i) {
         if (map.get(id).getPointFactor1().get(i) < 0 | map.get(id).getPointFactor1().get(i) > 10) {
