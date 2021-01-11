@@ -1,7 +1,9 @@
 {
   "1": {
     "id": 1,
-    "name": "A",
+    "name": "Aa",
+    "gender": "Nam",
+    "dob": "28/2/1999",
     "points": [
       [
         -1.0,
@@ -15,20 +17,22 @@
       ]
     ],
     "pointFactor1": [
-      6.0,
-      7.0
+      1.0,
+      2.0
     ],
     "pointFactor2": [
-      8.0
+      3.0
     ],
     "pointFactor3": [
-      9.0
+      4.4
     ],
-    "averagePoint": 8.0
+    "averagePoint": 3.1714285714285717
   },
   "2": {
     "id": 2,
-    "name": "B",
+    "name": "Bb",
+    "gender": "Nữ",
+    "dob": "1/1/1999",
     "points": [
       [
         -1.0,
@@ -42,42 +46,15 @@
       ]
     ],
     "pointFactor1": [
-      -1.0,
-      -1.0
+      1.0,
+      2.0
     ],
     "pointFactor2": [
-      -1.0
+      3.0
     ],
     "pointFactor3": [
-      -1.0
+      5.0
     ],
-    "averagePoint": -1.0
-  },
-  "3": {
-    "id": 3,
-    "name": "Hoai Son",
-    "points": [
-      [
-        -1.0,
-        -1.0
-      ],
-      [
-        -1.0
-      ],
-      [
-        -1.0
-      ]
-    ],
-    "pointFactor1": [
-      -1.0,
-      -1.0
-    ],
-    "pointFactor2": [
-      -1.0
-    ],
-    "pointFactor3": [
-      -1.0
-    ],
-    "averagePoint": -1.0
+    "averagePoint": 3.4285714285714284
   }
 }

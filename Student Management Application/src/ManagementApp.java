@@ -1,7 +1,6 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,7 +10,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class ManagementApp {
-    public static final String DASH_DECORATION = "----------------------------------------------------------------------------------------";
+    public static final String DASH_DECORATION = "--------------------------------------------------------------------------------------------------------------------";
     private static final Pattern NAME_PATTERN = Pattern.compile("^[\\pL ]{2,30}$");
     Scanner sc = new Scanner(System.in);
     static HashMap<Integer, Student> map = new HashMap<>();
@@ -322,6 +321,8 @@ public class ManagementApp {
         System.out.println(DASH_DECORATION);
         System.out.format("||%-3s |", "ID");
         System.out.format("%-30s |", "Tên");
+        System.out.format("%-12s |", "Ngày sinh");
+        System.out.format("%-12s |", "Giới tính");
         System.out.format("%-10s |", "Điểm hs1");
         System.out.format("%-10s |", "Điểm hs2");
         System.out.format("%-10s |", "Điểm hs3");
@@ -334,6 +335,8 @@ public class ManagementApp {
                         if (j == 0) {
                             System.out.format("||%-3d |", students.get(i).getId());
                             System.out.format("%-30s |", students.get(i).getName());
+                            System.out.format("%-12s |", students.get(i).getDob());
+                            System.out.format("%-12s |", students.get(i).getGender());
                             displayPoint(students.get(i).getPointFactor1().get(j));
                             displayPoint(students.get(i).getPointFactor2().get(j));
                             displayPoint(students.get(i).getPointFactor3().get(j));
@@ -342,6 +345,8 @@ public class ManagementApp {
                         } else {
                             System.out.format("||%-3s |", "");
                             System.out.format("%-30s |", "");
+                            System.out.format("%-12s |", "");
+                            System.out.format("%-12s |", "");
                             try {
                                 displayPoint(students.get(i).getPointFactor1().get(j));
                             } catch (IndexOutOfBoundsException e) {
@@ -422,7 +427,9 @@ public class ManagementApp {
         int number = validateNumberGreaterThan0("Nhập số lượng học viên cần thêm: ");
         for (int i = 0; i < number; i++) {
             String name = validateName("Nhập tên:");
-            Student student = new Student(name);
+            String dob = validateDoB("Nhập ngày tháng năm sinh");
+            String gender = validateGender();
+            Student student = new Student(name, dob, gender);
             map.put(student.getId(), student);
         }
         addFile();
@@ -438,6 +445,76 @@ public class ManagementApp {
         } catch (IOException e) {
             System.err.println("Có vấn đề ghi file");
         }
+    }
+
+    public String validateDoB(String mess) {
+        System.out.println(mess);
+        try {
+            System.out.println("Nhập ngày:");
+            int day = getInt();
+            System.out.println("Nhập tháng:");
+            int month = getInt();
+            System.out.println("Nhập năm:");
+            int year = getInt();
+            int dayLimit = validateDayMonth(month, year);
+            if (day > dayLimit | day < 1 | limitYear(year))
+                throw new Exception();
+            return day + "/" + month + "/" + year;
+        } catch (Exception e) {
+            System.err.println("Ngày tháng năm sinh không hợp lệ!\n Năm sinh phải trong khoảng [1930 - 2020] ");
+            return validateDoB(mess);
+        }
+    }
+
+    private int validateDayMonth(int month, int year) {
+        switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                return 31;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return 30;
+            case 2:
+                if (checkLeapYear(year))
+                    return 29;
+                else return 28;
+            default:
+                System.err.println("Nhập tháng sai");
+                return 0;
+        }
+    }
+
+    public boolean limitYear(int year) {
+        return year <= 1930 || year >= 2021;
+    }
+
+    private boolean checkLeapYear(int year) {
+        if (year % 400 == 0)
+            return true;
+        if (year % 4 == 0 && year % 100 != 0)
+            return true;
+        return false;
+    }
+
+    private String validateGender() {
+        System.out.println("Nhập giới tính");
+        int choise = validateNumberGreaterThan0("1. Nam\n2. Nữ");
+        switch (choise) {
+            case 1:
+                return "Nam";
+            case 2:
+                return "Nữ";
+            default:
+                System.out.println("Nhập sai giới tính");
+        }
+        return "";
     }
 
     private String validateName(String mess) {
@@ -528,7 +605,11 @@ public class ManagementApp {
         int id = validateID("Nhập ID để sửa, nhập 0 để trở về menu ");
         if (id == 0) return;
         String name = validateName("Nhập tên mới:");
+        String dob = validateDoB("Nhập ngày tháng năm sinh");
+        String gender = validateGender();
         map.get(id).setName(name);
+        map.get(id).setDob(dob);
+        map.get(id).setGender(gender);
         addFile();
         done();
     }

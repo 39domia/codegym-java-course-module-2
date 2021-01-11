@@ -4,25 +4,25 @@ class Student implements Comparable<Student> {
     private static int autoId;
     private final int id;
     private String name;
-//    private String gender;
+    private String gender;
 
-//    public String getGender() {
-//        return gender;
-//    }
-//
-//    public void setGender(String gender) {
-//        this.gender = gender;
-//    }
-//
-//    public String getDob() {
-//        return dob;
-//    }
-//
-//    public void setDob(String dob) {
-//        this.dob = dob;
-//    }
+    public String getGender() {
+        return gender;
+    }
 
-//    private String dob;
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    private String dob;
     private ArrayList<ArrayList<Double>> points = new ArrayList<>();
     private ArrayList<Double> pointFactor1 = new ArrayList<>();
     private ArrayList<Double> pointFactor2 = new ArrayList<>();
@@ -106,9 +106,13 @@ class Student implements Comparable<Student> {
         averagePoint = (totalPointFactor1 + totalPointFactor2 + totalPointFactor3) / totalNumberOfPoints;
     }
 
-    public Student(String name) {
+
+
+    public Student( String name, String dob, String gender) {
         this.id = ++autoId;
         this.name = name;
+        this.dob = dob;
+        this.gender = gender;
         initPointFactor1();
         initPointFactor2();
         initPointFactor3();
