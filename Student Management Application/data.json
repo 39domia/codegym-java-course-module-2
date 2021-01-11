@@ -1,0 +1,56 @@
+{
+  "1": {
+    "id": 1,
+    "name": "A",
+    "points": [
+      [
+        -1.0,
+        -1.0
+      ],
+      [
+        -1.0
+      ],
+      [
+        -1.0
+      ]
+    ],
+    "pointFactor1": [
+      -1.0,
+      -1.0
+    ],
+    "pointFactor2": [
+      -1.0
+    ],
+    "pointFactor3": [
+      -1.0
+    ],
+    "averagePoint": -1.0
+  },
+  "2": {
+    "id": 2,
+    "name": "B",
+    "points": [
+      [
+        -1.0,
+        -1.0
+      ],
+      [
+        -1.0
+      ],
+      [
+        -1.0
+      ]
+    ],
+    "pointFactor1": [
+      -1.0,
+      -1.0
+    ],
+    "pointFactor2": [
+      -1.0
+    ],
+    "pointFactor3": [
+      -1.0
+    ],
+    "averagePoint": -1.0
+  }
+}

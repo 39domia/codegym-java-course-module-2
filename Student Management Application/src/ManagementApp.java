@@ -1,15 +1,28 @@
-import java.io.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class ManagementApp {
+    public static final String DASH_DECORATION = "----------------------------------------------------------------------------------------";
     Scanner sc = new Scanner(System.in);
     static HashMap<Integer, Student> map = new HashMap<>();
+    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     static {
         try {
-            FileInputStream fileIn = new FileInputStream("data.txt");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            map = (HashMap<Integer, Student>) in.readObject();
+
+            FileReader reader = new FileReader(new File("data.json"));
+            Type mapType = new TypeToken<HashMap<Integer, Student>>(){}.getType();
+            HashMap<Integer, Student> jsonMap = gson.fromJson(reader, mapType);
+            if (jsonMap != null)
+                map = jsonMap;
             Student.setAutoId(map.get(map.size()).getId());
         } catch (Exception e) {
             System.out.print("");
@@ -305,14 +318,14 @@ public class ManagementApp {
     }
 
     private void showStudent(List<Student> students, int size) {
-        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println(DASH_DECORATION);
         System.out.format("||%-3s |", "ID");
         System.out.format("%-30s |", "Tên");
         System.out.format("%-10s |", "Điểm hs1");
         System.out.format("%-10s |", "Điểm hs2");
         System.out.format("%-10s |", "Điểm hs3");
         System.out.format("%-10s ||\n", "Điểm TB");
-        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println(DASH_DECORATION);
         try {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < findMaxNumberOfPoint(); j++) {
@@ -353,7 +366,7 @@ public class ManagementApp {
         } catch (IndexOutOfBoundsException e) {
             System.out.print("");
         }
-        System.out.println("----------------------------------------------------------------------------------------");
+        System.out.println(DASH_DECORATION);
     }
 
     private void displayPoint(double point) {
@@ -412,13 +425,15 @@ public class ManagementApp {
             map.put(student.getId(), student);
         }
         addFile();
+        done();
     }
 
     private void addFile() {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("data.txt");
-            ObjectOutputStream outputStream = new ObjectOutputStream(fileOutputStream);
-            outputStream.writeObject(map);
+            FileWriter writer = new FileWriter("data.json");
+            String json = gson.toJson(map);
+            writer.write(json);
+            writer.close();
         } catch (IOException e) {
             System.err.println("Có vấn đề ghi file");
         }
