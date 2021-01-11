@@ -1,3 +1,4 @@
+
 public class Contact {
     private String telNumber;
     private String group;
@@ -29,13 +30,6 @@ public class Contact {
         this.gender = gender;
     }
 
-    public String getDob() {
-        return dob;
-    }
-
-    public void setDob(String dob) {
-        this.dob = dob;
-    }
 
     public void setGroup(String group) {
         this.group = group;
@@ -66,6 +60,14 @@ public class Contact {
         this.address = address;
     }
 
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -74,6 +76,9 @@ public class Contact {
         this.email = email;
     }
 
+    public String getCVS() {
+        return String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", telNumber, group, name, gender, address, dob, email);
+    }
 
     @Override
     public String toString() {
