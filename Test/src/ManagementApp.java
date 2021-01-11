@@ -29,7 +29,6 @@ public class ManagementApp {
             System.out.println("7. Ghi vào file");
             System.out.println("8. Thoát chương trình");
             System.out.println("____________________________________________");
-            System.out.println(list);
             int choose = validateNumberGreaterThan0("Mời nhập:");
             switch (choose) {
                 case 1:
@@ -445,13 +444,6 @@ public class ManagementApp {
 
     public static void main(String[] args) {
         ManagementApp app = new ManagementApp();
-//        Contact c1 = new Contact("000000001", "Code Gym", "Hoai Son", "Nam", "Hue", "1/1/1990", "hoaison@gmail.com");
-//        Contact c2 = new Contact("000000002", "Dai hoc", "Nguyen Van A", "Nam", "HCM", "1/1/1990", "hoaison@gmail.com");
-//        Contact c3 = new Contact("000000003", "Dai hoc", "Nguyen Van A", "Nam", "HCM", "1/1/1990", "hoaison@gmail.com");
-//        list.add(c3);
-//        list.add(c2);
-//        list.add(c1);
         app.showMenu();
-//        System.out.println(app.validateDoB("a"));
     }
 }
