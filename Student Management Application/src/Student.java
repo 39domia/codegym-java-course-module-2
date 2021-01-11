@@ -1,11 +1,28 @@
-import java.io.Serializable;
 import java.util.ArrayList;
 
-class Student implements Comparable<Student>, Serializable {
-    private static final long serialVersionUID = 1L;
+class Student implements Comparable<Student> {
     private static int autoId;
-    private int id;
+    private final int id;
     private String name;
+//    private String gender;
+
+//    public String getGender() {
+//        return gender;
+//    }
+//
+//    public void setGender(String gender) {
+//        this.gender = gender;
+//    }
+//
+//    public String getDob() {
+//        return dob;
+//    }
+//
+//    public void setDob(String dob) {
+//        this.dob = dob;
+//    }
+
+//    private String dob;
     private ArrayList<ArrayList<Double>> points = new ArrayList<>();
     private ArrayList<Double> pointFactor1 = new ArrayList<>();
     private ArrayList<Double> pointFactor2 = new ArrayList<>();

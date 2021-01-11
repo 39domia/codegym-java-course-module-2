@@ -8,16 +8,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class ManagementApp {
     public static final String DASH_DECORATION = "----------------------------------------------------------------------------------------";
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[\\pL ]{2,30}$");
     Scanner sc = new Scanner(System.in);
     static HashMap<Integer, Student> map = new HashMap<>();
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     static {
         try {
-
             FileReader reader = new FileReader(new File("data.json"));
             Type mapType = new TypeToken<HashMap<Integer, Student>>(){}.getType();
             HashMap<Integer, Student> jsonMap = gson.fromJson(reader, mapType);
@@ -443,12 +444,8 @@ public class ManagementApp {
         System.out.println(mess);
         try {
             String name = sc.nextLine();
-            if (name.length() > 30 | name.length() == 0) throw new Exception();
-            for (int i = 0; i < name.length(); i++) {
-                String str = name.charAt(i) + "";
-                if (!str.matches("[a-zA-Z ]")) {
-                    throw new Exception();
-                }
+            if (!NAME_PATTERN.matcher(name).matches()) {
+                throw new Exception();
             }
             name = name.toLowerCase();
             name = name.trim();

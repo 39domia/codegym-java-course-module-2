@@ -15,6 +15,33 @@
       ]
     ],
     "pointFactor1": [
+      6.0,
+      7.0
+    ],
+    "pointFactor2": [
+      8.0
+    ],
+    "pointFactor3": [
+      9.0
+    ],
+    "averagePoint": 8.0
+  },
+  "2": {
+    "id": 2,
+    "name": "B",
+    "points": [
+      [
+        -1.0,
+        -1.0
+      ],
+      [
+        -1.0
+      ],
+      [
+        -1.0
+      ]
+    ],
+    "pointFactor1": [
       -1.0,
       -1.0
     ],
@@ -26,9 +53,9 @@
     ],
     "averagePoint": -1.0
   },
-  "2": {
-    "id": 2,
-    "name": "B",
+  "3": {
+    "id": 3,
+    "name": "Hoai Son",
     "points": [
       [
         -1.0,
