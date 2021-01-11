@@ -1,9 +1,9 @@
 {
   "1": {
     "id": 1,
-    "name": "Aa",
+    "name": "Tu",
     "gender": "Nam",
-    "dob": "28/2/1999",
+    "dob": "23/12/2000",
     "points": [
       [
         -1.0,
@@ -17,16 +17,16 @@
       ]
     ],
     "pointFactor1": [
-      1.0,
-      2.0
+      -1.0,
+      -1.0
     ],
     "pointFactor2": [
-      3.0
+      -1.0
     ],
     "pointFactor3": [
-      4.4
+      -1.0
     ],
-    "averagePoint": 3.1714285714285717
+    "averagePoint": -1.0
   },
   "2": {
     "id": 2,
@@ -56,5 +56,63 @@
       5.0
     ],
     "averagePoint": 3.4285714285714284
+  },
+  "3": {
+    "id": 3,
+    "name": "Nam",
+    "gender": "Nam",
+    "dob": "2/12/2000",
+    "points": [
+      [
+        -1.0,
+        -1.0
+      ],
+      [
+        -1.0
+      ],
+      [
+        -1.0
+      ]
+    ],
+    "pointFactor1": [
+      -1.0,
+      -1.0
+    ],
+    "pointFactor2": [
+      -1.0
+    ],
+    "pointFactor3": [
+      -1.0
+    ],
+    "averagePoint": -1.0
+  },
+  "5": {
+    "id": 5,
+    "name": "Adf",
+    "gender": "Nam",
+    "dob": "1/1/2019",
+    "points": [
+      [
+        -1.0,
+        -1.0
+      ],
+      [
+        -1.0
+      ],
+      [
+        -1.0
+      ]
+    ],
+    "pointFactor1": [
+      -1.0,
+      -1.0
+    ],
+    "pointFactor2": [
+      -1.0
+    ],
+    "pointFactor3": [
+      -1.0
+    ],
+    "averagePoint": -1.0
   }
 }

@@ -19,7 +19,8 @@ public class ManagementApp {
     static {
         try {
             FileReader reader = new FileReader(new File("data.json"));
-            Type mapType = new TypeToken<HashMap<Integer, Student>>(){}.getType();
+            Type mapType = new TypeToken<HashMap<Integer, Student>>() {
+            }.getType();
             HashMap<Integer, Student> jsonMap = gson.fromJson(reader, mapType);
             if (jsonMap != null)
                 map = jsonMap;
@@ -41,6 +42,7 @@ public class ManagementApp {
             System.out.println("7. Xếp loại học viên");
             System.out.println("0. Thoát chương trình");
             System.out.println("____________________________________________");
+            System.out.println(map);
             int choose = validateNumberGreaterThan0("Mời nhập:");
             switch (choose) {
                 case 1:
@@ -409,8 +411,7 @@ public class ManagementApp {
 
     private void showStudentList() {
         List<Student> listStudent = new ArrayList<>(map.values());
-
-        showStudent(listStudent, Student.getAutoId());
+        showStudent(listStudent, listStudent.size());
     }
 
     public int findMaxNumberOfPoint() {
@@ -426,6 +427,7 @@ public class ManagementApp {
     private void addStudent() {
         int number = validateNumberGreaterThan0("Nhập số lượng học viên cần thêm: ");
         for (int i = 0; i < number; i++) {
+            System.out.println("Nhập thông tin học sinh thứ " + (i + 1));
             String name = validateName("Nhập tên:");
             String dob = validateDoB("Nhập ngày tháng năm sinh");
             String gender = validateGender();
@@ -450,23 +452,59 @@ public class ManagementApp {
     public String validateDoB(String mess) {
         System.out.println(mess);
         try {
-            System.out.println("Nhập ngày:");
-            int day = getInt();
-            System.out.println("Nhập tháng:");
-            int month = getInt();
-            System.out.println("Nhập năm:");
-            int year = getInt();
+            int day = validateDay("Nhập ngày sinh:");
+            int month = validateMonth("Nhập tháng:");
+            int year = validateYear("Nhập năm sinh:");
             int dayLimit = validateDayMonth(month, year);
-            if (day > dayLimit | day < 1 | limitYear(year))
-                throw new Exception();
+            if (day > dayLimit | day < 1)
+                throw new Exception("Ngày phải trong khoảng [1 - " + dayLimit + "] (phụ thuộc vào tháng)");
             return day + "/" + month + "/" + year;
         } catch (Exception e) {
-            System.err.println("Ngày tháng năm sinh không hợp lệ!\n Năm sinh phải trong khoảng [1930 - 2020] ");
+            System.err.println(e.getMessage());
             return validateDoB(mess);
         }
     }
 
-    private int validateDayMonth(int month, int year) {
+    private int validateDay(String mess) {
+        System.out.println(mess);
+        try {
+            int day = getInt();
+            if (day < 1 | day > 31) throw new Exception();
+            return day;
+        } catch (Exception e) {
+            System.err.println("Ngày sinh không hợp lệ");
+            return validateDay(mess);
+        }
+    }
+
+    private int validateMonth(String mess) {
+        System.out.println(mess);
+        try {
+            int month = getInt();
+            if (month < 1 | month > 12) throw new Exception();
+            return month;
+        } catch (Exception e) {
+            System.err.println("Tháng không hợp lệ");
+            return validateMonth(mess);
+        }
+    }
+
+    private int validateYear(String mess) {
+        System.out.println(mess);
+        try {
+            int year = getInt();
+            if (limitYear(year)) {
+                System.err.println("Năm sinh phải trong khoảng [1930 - 2019]");
+                return validateYear(mess);
+            }
+            return year;
+        } catch (Exception e) {
+            System.err.println("Năm sinh không hợp lệ");
+            return validateYear(mess);
+        }
+    }
+
+    private int validateDayMonth(int month, int year) throws Exception {
         switch (month) {
             case 1:
             case 3:
@@ -486,13 +524,12 @@ public class ManagementApp {
                     return 29;
                 else return 28;
             default:
-                System.err.println("Nhập tháng sai");
-                return 0;
+                throw new Exception("Tháng phải trong khoảng [1 - 12]");
         }
     }
 
     public boolean limitYear(int year) {
-        return year <= 1930 || year >= 2021;
+        return year <= 1930 || year >= 2020;
     }
 
     private boolean checkLeapYear(int year) {
@@ -505,16 +542,20 @@ public class ManagementApp {
 
     private String validateGender() {
         System.out.println("Nhập giới tính");
-        int choise = validateNumberGreaterThan0("1. Nam\n2. Nữ");
-        switch (choise) {
-            case 1:
-                return "Nam";
-            case 2:
-                return "Nữ";
-            default:
-                System.out.println("Nhập sai giới tính");
+        try {
+            int choise = validateNumberGreaterThan0("1. Nam\n2. Nữ");
+            switch (choise) {
+                case 1:
+                    return "Nam";
+                case 2:
+                    return "Nữ";
+                default:
+                    throw new Exception();
+            }
+        } catch (Exception e) {
+            System.err.println("Nhập sai giới tính");
+            return validateGender();
         }
-        return "";
     }
 
     private String validateName(String mess) {
