@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -15,7 +12,11 @@ public class ManagementApp {
     private static final Pattern ADDRESS_PATTERN = Pattern.compile("^[\\pL\\d., /-]+$");
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("^\\d{7,12}$");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^\\w+@\\w+\\.\\w+$");
-//    static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private static final String fileName = "data\\contacts.csv";
+
+    static {
+        new File("data/").mkdirs();
+    }
 
     public void showMenu() {
         while (true) {
@@ -27,12 +28,12 @@ public class ManagementApp {
             System.out.println("5. Tìm kiếm");
             System.out.println("6. Đọc từ file");
             System.out.println("7. Ghi vào file");
-            System.out.println("8. Thoát chương trình");
+            System.out.println("0. Thoát chương trình");
             System.out.println("____________________________________________");
             int choose = validateNumberGreaterThan0("Mời nhập:");
             switch (choose) {
                 case 1:
-                    showContactList();
+                    showContactList(list);
                     break;
                 case 2:
                     addContact();
@@ -52,7 +53,7 @@ public class ManagementApp {
                 case 7:
                     writeFile();
                     break;
-                case 8:
+                case 0:
                     System.out.println("Cảm ơn đã sử dụng, tạm biệt!");
                     return;
                 default:
@@ -63,9 +64,9 @@ public class ManagementApp {
     }
 
     private void writeFile() {
-        String fileName = "contacts.csv";
         writeCSVFile(fileName);
     }
+
     public static void writeCSVFile(String fileName) {
         FileWriter fileWriter = null;
         try {
@@ -86,15 +87,15 @@ public class ManagementApp {
                 fileWriter.append(contact.getEmail());
                 fileWriter.append(NEW_LINE_SEPARATOR);
             }
-            System.out.println("CSV file was created successfully !!!");
+            System.out.println("Ghi file thành công");
         } catch (Exception e) {
-            System.err.println("Error in CsvFileWriter !!!");
+            System.err.println("Lỗi ghi file");
         } finally {
             try {
                 fileWriter.flush();
                 fileWriter.close();
             } catch (IOException e) {
-                System.err.println("Error while flushing/closing fileWriter !!!");
+                System.err.println("Lỗi ghi file trong quá trình đóng/flush file");
                 e.printStackTrace();
             }
         }
@@ -104,19 +105,19 @@ public class ManagementApp {
         BufferedReader br = null;
         try {
             String line;
-            br = new BufferedReader(new FileReader("contacts.csv"));
+            br = new BufferedReader(new FileReader(fileName));
             while ((line = br.readLine()) != null) {
                 list.add(parseCsvLine(line));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Lỗi không tìm thấy file");
         } finally {
             try {
                 if (br != null)
                     br.close();
-                System.out.println("Đọc file thành công");
+                System.out.println("Đọc file thành công\n");
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Lỗi không tìm thấy file");
             }
         }
     }
@@ -133,36 +134,62 @@ public class ManagementApp {
     }
 
     private void searchContact() {
-        System.out.println("1. Tìm kiếm theo số điện thoại");
-        System.out.println("2. Tìm kiếm theo Tên");
-        int choise = validateNumberGreaterThan0("Nhập lựa chọn");
-        switch (choise) {
-            case 1:
-                searchContactByTel();
-                break;
-            case 2:
-                searchContactByName();
-                break;
-            default:
-                System.out.println("Nhập sai");
+        while (true) {
+            System.out.println("1. Tìm kiếm theo số điện thoại");
+            System.out.println("2. Tìm kiếm theo Tên");
+            System.out.println("0. Trở về menu");
+            int choice = validateNumberGreaterThan0("Nhập lựa chọn");
+            switch (choice) {
+                case 1:
+                    searchContactByTel();
+                    break;
+                case 2:
+                    searchContactByName();
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.err.println("Không có chức năng này");
+            }
         }
     }
 
     private void searchContactByTel() {
         String tel = validateTel("Nhập số điện thoại");
+        int count = 0;
+        List<Contact> list1 = new ArrayList<>();
         for (Contact contact : list) {
             if (contact.getTelNumber().contains(tel)) {
-                displayContactInfo(contact);
+                list1.add(contact);
+                count++;
             }
         }
+        showSearchList(count, list1);
     }
 
     private void searchContactByName() {
         String name = validateName("Nhập Tên");
+        int count = 0;
+        List<Contact> list1 = new ArrayList<>();
         for (Contact contact : list) {
             if (contact.getName().contains(name)) {
-                displayContactInfo(contact);
+                list1.add(contact);
+                count++;
             }
+        }
+        showSearchList(count, list1);
+    }
+
+    private void showSearchList(int count, List<Contact> list1) {
+        if (count == 0) {
+            System.out.println("Không tìm thấy");
+        } else {
+            printTitle();
+            for (Contact contact : list1) {
+                displayContactInfo(contact);
+                System.out.println();
+            }
+            System.out.println(DASH_DECORATION);
         }
     }
 
@@ -184,11 +211,28 @@ public class ManagementApp {
         }
         boolean check = checkExistTelNum(telNum);
         if (check) {
-            list.remove(getContactByTel(telNum));
+            System.out.println("Bạn có chắc chắn muốn xóa danh bạ này?");
+            confirmDelete(telNum);
+            System.out.println("Xóa file thành công");
         } else {
             System.err.println("Không có số điện thoại này trong danh bạ");
         }
     }
+
+    private void confirmDelete(String telNum) {
+        int choise = validateNumberGreaterThan0("1. Có\n2. Không");
+        switch (choise) {
+            case 1:
+                list.remove(getContactByTel(telNum));
+                break;
+            case 2:
+                return;
+            default:
+                System.err.println("Chỉ 'Có' hoặc 'Không'");
+                confirmDelete(telNum);
+        }
+    }
+
 
     public Contact getContactByTel(String telNum) {
         for (Contact contact : list
@@ -232,23 +276,59 @@ public class ManagementApp {
     public String validateDoB(String mess) {
         System.out.println(mess);
         try {
-            System.out.println("Nhập ngày:");
-            int day = getInt();
-            System.out.println("Nhập tháng:");
-            int month = getInt();
-            System.out.println("Nhập năm:");
-            int year = getInt();
+            int day = validateDay("Nhập ngày sinh:");
+            int month = validateMonth("Nhập tháng:");
+            int year = validateYear("Nhập năm sinh:");
             int dayLimit = validateDayMonth(month, year);
-            if (day > dayLimit | day < 1 | limitYear(year))
-                throw new Exception();
+            if (day > dayLimit | day < 1)
+                throw new Exception("Ngày phải trong khoảng [1 - " + dayLimit + "] (phụ thuộc vào tháng)");
             return day + "/" + month + "/" + year;
         } catch (Exception e) {
-            System.err.println("Ngày tháng năm sinh không hợp lệ!\n Năm sinh phải trong khoảng [1930 - 2020] ");
+            System.err.println(e.getMessage());
             return validateDoB(mess);
         }
     }
 
-    private int validateDayMonth(int month, int year) {
+    private int validateDay(String mess) {
+        System.out.println(mess);
+        try {
+            int day = getInt();
+            if (day < 1 | day > 31) throw new Exception();
+            return day;
+        } catch (Exception e) {
+            System.err.println("Ngày sinh không hợp lệ");
+            return validateDay(mess);
+        }
+    }
+
+    private int validateMonth(String mess) {
+        System.out.println(mess);
+        try {
+            int month = getInt();
+            if (month < 1 | month > 12) throw new Exception();
+            return month;
+        } catch (Exception e) {
+            System.err.println("Tháng không hợp lệ");
+            return validateMonth(mess);
+        }
+    }
+
+    private int validateYear(String mess) {
+        System.out.println(mess);
+        try {
+            int year = getInt();
+            if (limitYear(year)) {
+                System.err.println("Năm sinh phải trong khoảng [1930 - 2019]");
+                return validateYear(mess);
+            }
+            return year;
+        } catch (Exception e) {
+            System.err.println("Năm sinh không hợp lệ");
+            return validateYear(mess);
+        }
+    }
+
+    private int validateDayMonth(int month, int year) throws Exception {
         switch (month) {
             case 1:
             case 3:
@@ -268,10 +348,10 @@ public class ManagementApp {
                     return 29;
                 else return 28;
             default:
-                System.err.println("Nhập tháng sai");
-                return 0;
+                throw new Exception("Tháng phải trong khoảng [1 - 12]");
         }
     }
+
 
     private boolean checkLeapYear(int year) {
         if (year % 400 == 0)
@@ -280,6 +360,7 @@ public class ManagementApp {
             return true;
         return false;
     }
+
 
     private boolean checkExistTelNum(String telNum) {
         for (Contact contact : list) {
@@ -304,16 +385,20 @@ public class ManagementApp {
 
     private String validateGender() {
         System.out.println("Nhập giới tính");
-        int choise = validateNumberGreaterThan0("1. Nam\n2. Nữ");
-        switch (choise) {
-            case 1:
-                return "Nam";
-            case 2:
-                return "Nữ";
-            default:
-                System.out.println("Nhập sai giới tính");
+        try {
+            int choise = validateNumberGreaterThan0("1. Nam\n2. Nữ");
+            switch (choise) {
+                case 1:
+                    return "Nam";
+                case 2:
+                    return "Nữ";
+                default:
+                    throw new Exception();
+            }
+        } catch (Exception e) {
+            System.err.println("Nhập sai giới tính");
+            return validateGender();
         }
-        return "";
     }
 
     private String validateTel(String mess) {
@@ -403,7 +488,16 @@ public class ManagementApp {
         }
     }
 
-    private void showContactList() {
+    private void showContactList(List<Contact> list) {
+        printTitle();
+        for (Contact contact : list) {
+            displayContactInfo(contact);
+            System.out.println();
+        }
+        System.out.println(DASH_DECORATION);
+    }
+
+    private void printTitle() {
         System.out.println(DASH_DECORATION);
         System.out.format("|%-15s ", "Số điện thoại");
         System.out.format("|%-20s ", "Nhóm");
@@ -412,11 +506,6 @@ public class ManagementApp {
         System.out.format("|%-30s ", "Địa chỉ");
         System.out.format("|%-10s ", "Ngày sinh");
         System.out.format("|%-30s |\n", "Email");
-        System.out.println(DASH_DECORATION);
-        for (Contact contact : list) {
-            displayContactInfo(contact);
-            System.out.println();
-        }
         System.out.println(DASH_DECORATION);
     }
 

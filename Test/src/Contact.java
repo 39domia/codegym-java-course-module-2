@@ -76,9 +76,9 @@ public class Contact {
         this.email = email;
     }
 
-    public String getCVS() {
-        return String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", telNumber, group, name, gender, address, dob, email);
-    }
+//    public String getCVS() {
+//        return String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"", telNumber, group, name, gender, address, dob, email);
+//    }
 
     @Override
     public String toString() {

@@ -15,7 +15,7 @@ class IOHandler {
     public static void writeCVS(List<Contact> list) {
         try (PrintWriter fileWriter = new PrintWriter(fileName)) {
             for (Contact contact : list) {
-                fileWriter.println(contact.getCVS());
+//                fileWriter.println(contact.getCVS());
             }
             System.out.println("Luu CVS thanh cong");
         } catch (IOException e) {
