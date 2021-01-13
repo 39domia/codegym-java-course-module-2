@@ -51,7 +51,7 @@ public class ManagementApp {
                     readFile();
                     break;
                 case 7:
-                    writeFile();
+                    writeFile(fileName);
                     break;
                 case 0:
                     System.out.println("Cảm ơn đã sử dụng, tạm biệt!");
@@ -63,61 +63,65 @@ public class ManagementApp {
         }
     }
 
-    private void writeFile() {
-        writeCSVFile(fileName);
-    }
-
-    public static void writeCSVFile(String fileName) {
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(fileName);
-            for (Contact contact : list) {
-                fileWriter.append(contact.getTelNumber());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(contact.getGroup());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(contact.getName());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(contact.getGender());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(contact.getAddress());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(contact.getDob());
-                fileWriter.append(COMMA_DELIMITER);
-                fileWriter.append(contact.getEmail());
-                fileWriter.append(NEW_LINE_SEPARATOR);
-            }
-            System.out.println("Ghi file thành công");
-        } catch (Exception e) {
-            System.err.println("Lỗi ghi file");
-        } finally {
+    public void writeFile(String fileName) {
+        System.out.println("Chức năng này sẽ ghi đè tất cả các danh bạ (kể cả null) hiện có trong chương trình vào file");
+        System.out.println("Bạn có chắc muốn ghi file?");
+        if (confirmWriteFile()) {
+            FileWriter fileWriter = null;
             try {
-                fileWriter.flush();
-                fileWriter.close();
-            } catch (IOException e) {
-                System.err.println("Lỗi ghi file trong quá trình đóng/flush file");
-                e.printStackTrace();
+                fileWriter = new FileWriter(fileName);
+                for (Contact contact : list) {
+                    fileWriter.append(contact.getTelNumber());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(contact.getGroup());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(contact.getName());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(contact.getGender());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(contact.getAddress());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(contact.getDob());
+                    fileWriter.append(COMMA_DELIMITER);
+                    fileWriter.append(contact.getEmail());
+                    fileWriter.append(NEW_LINE_SEPARATOR);
+                }
+                System.out.println("Ghi file thành công");
+            } catch (Exception e) {
+                System.err.println("Lỗi ghi file");
+            } finally {
+                try {
+                    fileWriter.flush();
+                    fileWriter.close();
+                } catch (IOException e) {
+                    System.err.println("Lỗi ghi file trong quá trình đóng/flush file");
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     private void readFile() {
-        BufferedReader br = null;
-        try {
-            String line;
-            br = new BufferedReader(new FileReader(fileName));
-            while ((line = br.readLine()) != null) {
-                list.add(parseCsvLine(line));
-            }
-        } catch (IOException e) {
-            System.err.println("Lỗi không tìm thấy file");
-        } finally {
+//        System.out.println("Chức năng này sẽ ghi đè tất cả các danh bạ (kể cả null) hiện có trong chương trình vào file");
+        System.out.println("Bạn có chắc muốn đọc file?");
+        if (confirmWriteFile()) {
+            BufferedReader bufferedReader = null;
             try {
-                if (br != null)
-                    br.close();
-                System.out.println("Đọc file thành công\n");
+                String line;
+                bufferedReader = new BufferedReader(new FileReader(fileName));
+                while ((line = bufferedReader.readLine()) != null) {
+                    list.add(parseCsvLine(line));
+                }
             } catch (IOException e) {
                 System.err.println("Lỗi không tìm thấy file");
+            } finally {
+                try {
+                    if (bufferedReader != null)
+                        bufferedReader.close();
+                    System.out.println("Đọc file thành công\n");
+                } catch (IOException e) {
+                    System.err.println("Lỗi không tìm thấy file");
+                }
             }
         }
     }
@@ -168,11 +172,11 @@ public class ManagementApp {
     }
 
     private void searchContactByName() {
-        String name = validateName("Nhập Tên");
+        String name = validateName("Nhập Tên").toLowerCase();
         int count = 0;
         List<Contact> list1 = new ArrayList<>();
         for (Contact contact : list) {
-            if (contact.getName().contains(name)) {
+            if (contact.getName().toLowerCase().contains(name)) {
                 list1.add(contact);
                 count++;
             }
@@ -230,6 +234,19 @@ public class ManagementApp {
             default:
                 System.err.println("Chỉ 'Có' hoặc 'Không'");
                 confirmDelete(telNum);
+        }
+    }
+
+    private boolean confirmWriteFile() {
+        int choise = validateNumberGreaterThan0("1. Có\n2. Không");
+        switch (choise) {
+            case 1:
+                return true;
+            case 2:
+                return false;
+            default:
+                System.err.println("Chỉ 'Có' hoặc 'Không'");
+                return confirmWriteFile();
         }
     }
 
@@ -405,13 +422,13 @@ public class ManagementApp {
         System.out.println(mess);
         try {
             String tel = sc.nextLine();
-            if (PHONE_NUMBER_PATTERN.matcher(tel).matches()) {
+            if (PHONE_NUMBER_PATTERN.matcher(tel).matches() && !checkExistTelNum(tel)) {
                 return tel;
             } else {
                 throw new Exception();
             }
         } catch (Exception e) {
-            System.err.println("Số điện thoại sai định dạng");
+            System.err.println("Số điện thoại sai định dạng hoặc trùng");
             return validateTel(mess);
         }
     }
@@ -534,5 +551,6 @@ public class ManagementApp {
     public static void main(String[] args) {
         ManagementApp app = new ManagementApp();
         app.showMenu();
+//        System.out.println("Nguyen Van A".contains("uy"));
     }
 }

@@ -621,7 +621,7 @@ public class ManagementApp {
 
     public double validatePoints(String mess) {
         System.out.println(mess);
-        String input = sc.nextLine();
+        String input = sc.nextLine().toLowerCase();
         if (input.equals("x"))
             throw new IllegalArgumentException();
         try {
